@@ -1,0 +1,136 @@
+<div class="panel panel-white">
+
+		
+		<!-- <div class="alert alert-danger" ng-repeat="error in errors">[[error]]</div> -->
+	<div class="panel-body ">
+		<div class="section section-title-border">
+			<h3 >Rules Setup</h3>
+		</div>
+		<span class="alert alert-success p-v-xs col-sm-9 ng-binding ng-hide" ng-hide="success_msg == ''" ng-bind="success_msg"></span> 
+		<span class="alert alert-danger col-sm-9 " ng-repeat="error in errors">[[error]]</span>
+		<div class=" col-sm-12 form-horizontal rules-criteria">
+		<div class="row">
+			<div class="col-sm-6 col-xs-12 " >
+
+				<div class="form-group m-b-lg">
+				
+				
+					<div class="col-sm-5 col-xs-5">
+						<b>Lead type category</b>
+					</div>
+				
+				
+					<div class="col-sm-5 col-xs-5">
+						<b>Partners</b>
+					</div>
+					
+					
+					
+					<div class="col-sm-2 col-xs-2">
+						<button class="btn btn-success  btn-rounded action-btn"
+							title="Add" ng-click="addRulesCriteria()">
+							<span class="fa fa-plus"></span>
+						</button>
+					</div>
+					
+					
+				</div>
+	
+						<div class="form-group" ng-repeat="(index,rulesLtcId) in rulesLtc " class="rules" data-rule="ltc_[[rulesLtcId]]" >
+						
+							<!--  lead type category column -->
+							<div class="col-md-5 col-sm-5 col-xs-5">
+								<select class="form-control"  ng-model="selectedLtc[index]"  ng-change="validateLtc(index,selectedLtc[index])" >
+									<option value="0">Please select </option>
+									<option  ng-repeat="(key,ltc) in leadTypeCategories" ng-selected="rulesLtcId==ltc.id" value="[[ltc.id]]" >[[ltc.name]]</option>
+								</select>
+							</div>
+							
+							
+							<!--  partners multiselect popup column -->
+							<div class="col-md-5 col-sm-5 col-xs-5">				  
+								 <div class="partners_wrapper" >								
+								</div> 
+							</div>
+							
+							<!-- 	remove  buttons -->
+							<div class="col-md-2 col-sm-2 col-xs-2">
+								<button class="btn btn-danger btn-rounded action-btn " ng-click="removeRulesCriteria(index,rulesLtcId)">
+									<span class=" fa fa-minus" title="Remove" ></span>
+								</button>
+							</div>						
+							
+							
+						</div>
+
+				<hr>
+
+				<div class="form-group">
+					<div class="col-sm-10 col-xs-12"  >
+						<div class="row">
+							<div id="leadStatuses"  ng-repeat="(index,value) in leadStatuses"  >
+								<label class="col-sm-9 col-xs-9 control-label">[[value.name]]&nbsp;:</label>
+								<div class="col-sm-3 col-xs-3  checkbox">
+									<input type="checkbox"  value="[[value.slug]]" ng-model="value.selected">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<hr>
+
+				<div class="form-group text-center">
+					<button class="btn btn-success" ng-disabled = "btnDisabled"  ng-click=saveRules() >Save</button>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{literal}
+<script type="text/javascript">
+
+  	
+ 	   function leadSourceFiltersHtml( ) {       	
+       	
+       	var filter = '';
+			
+			//filter selected based on url params, default selected to active if not found any selection
+			activeChecked = "";
+			inactiveChecked = "";
+			
+			if(filter == 'active') {
+				activeChecked = "checked";
+			} else if(filter == 'inactive') {
+				inactiveChecked = "checked";
+			} else {
+				activeChecked = "checked";
+				inactiveChecked = "checked";
+			}
+			
+			var html = "";
+       	
+       	html +=	"<label class='cust-label'>Filter</label>"+
+   				"<div class='checkbox'>" +
+   					"<label>" +
+   						"<input type='checkbox' name='filter_active'  value='active' "+activeChecked+"/>" +
+   						"Active Sources" +
+   					"</label>" +
+   				"</div>" +
+   				"<div class='checkbox'>" +
+   					"<label>" +
+   						"<input type='checkbox' name='filter_inactive'  value='inactive' "+inactiveChecked+" />" +
+   						"Inactive Sources" +
+   					"</label>" +
+   				"</div>";
+   				
+       	
+       	return html;
+       	
+       }
+	 
+    
+</script>
+{/literal}

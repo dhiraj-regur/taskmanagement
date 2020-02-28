@@ -1,0 +1,62 @@
+<div id="usersCapsManagement" ng-controller="userscapsmanagementController" ng-init="init()">
+<div class="row">
+		<div class="col-md-12">
+				<div class="alert alert-success" ng-hide="success_msg == ''" ng-bind="success_msg"></div>
+				<div class="alert alert-danger"  ng-repeat="error in errors">[[error]]</div>
+		</div>
+</div>
+
+
+  <div class="row">	
+  	<div class="col-md-12">
+   		 <div class="panel panel-white">	
+ 		 	 	 <div class="panel-heading">
+ 		 	 		 <div class="row">
+						<div class="col-md-12 ">
+							   <div class="row">
+									<div class="col-md-8 p-v-xs ">
+											<h3 class=" panel-title">Users  Daily Caps</h3>
+									</div>
+									<div class="col-md-4">
+										<button class="btn btn-success pull-right" id="updateAll"  ng-click="updateAll()">Update All</button>
+									</div>
+								</div>
+						</div>
+					</div>
+ 		 	 	</div>  
+				<div class="panel-body">
+
+	         		<div class="table-responsive">
+						<table id='capsManagementTable' class="display  table-bordered text-center table-striped">
+						<thead  class="text-center">
+						    <tr >
+						    <th class="p-v-xs">User Id</th>
+   						    <th>Username</th>
+						    <th>Agent Name</th>
+						    <th>User Role</th>
+							<th  ng-repeat="ltc in  leadTypeCategories">[[ltc.name]]</th>
+							<th>Action</th>
+						</tr>
+						</thead>
+						<tbody>
+
+						<tr ng-repeat="(index,userData) in usersData">
+						    <td>[[userData.id]]</td>
+   						    <td><a href="/admin/users/edit/id/[[userData.id]]"> [[userData.username]]</a></td>
+						    <td> [[userData.name]]</td>
+  						    <td>[[userData.role]]</td>
+  						      <td class="p-h-sm p-v-xs"  ng-repeat="ltc in  leadTypeCategories">
+  						      		<input  type="text" class="form-control"  ng-keypress="filterValue($event)"  ng-repeat="(ltcId,value) in userData.userCapSettings.ltc" ng-if="ltc.id== ltcId" value="[[value.caps.dailyCaps]]" ng-model="value.caps.dailyCaps">
+ 						      </td>
+  						    <td ><button class="btn btn-success m-t-xs m-b-xs update-[[userData.id]]"   ng-click="update(userData.id)">Update</button></td>
+						</tr>
+
+						</tbody>
+
+						</table>
+					</div>
+ 				</div>
+			</div>
+		</div>	
+	</div>	
+ </div>

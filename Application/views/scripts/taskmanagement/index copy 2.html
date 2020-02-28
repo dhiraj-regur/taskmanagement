@@ -1,0 +1,288 @@
+<script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js" crossorigin></script>
+<link href="/front/css/style.css" rel="stylesheet">
+<div id="root"></div>
+<!--<script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>-->
+
+{literal}
+
+<script type="text/babel" language="javascript">
+var KEYCODE_ENTER = 13; 
+var KEYCODE_ESC = 27;
+var KEYCODE_TAB = 9;
+
+
+/*
+TODO- add new projects
+contains projects
+//add/update/delete shall happen here or should communicated to App
+*/
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userId: 1,
+      allTabItems: [],
+      projectsInfo: [],
+      fetchdata: false,
+    }
+  }
+
+  async componentDidMount() {
+    const userId = this.state.userId // TODO-we grab the ID from the URL
+    this.setState({fetchdata: true})
+    await axios.get(`/taskmanagement/projecttasks/${userId}`)
+                .then(response => {
+                const tabinfo = Array.from(new Set(response.data.map(p=>p.projectId)))
+                .map(id=> {
+                  return {
+                    id: id,
+                    projectName: response.data.find(p => p.projectId == id).projectName,
+                    userId: response.data.find(p => p.projectId == id).userId,
+                  }
+                })
+                this.setState({
+                  allTabItems: tabinfo,
+                  projectsInfo: response.data
+                })
+                //console.log(tabinfo);
+
+      }).catch(err => console.log(err))
+
+      //TODO- if no tab then set default empty project(tab and board ready)
+
+  }
+
+  render() {
+    var self = this;console.log(this.state.fetchdata);
+    var allTabItems = this.state.allTabItems;
+    var projectsInfo = this.state.projectsInfo;
+    return (
+      <div className="app">
+        {this.state.allTabItems.length > 0 && 
+        <ProjectList
+          allTabItems={allTabItems}
+          projectsInfo={projectsInfo}
+        />
+        }
+      </div>
+    
+    )
+  }
+
+}
+
+/*
+proejcts container
+*/
+class ProjectList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      TabItems: props.allTabItems,
+      projectsInfo: props.projectsInfo,
+    }
+  }
+
+/*componentWillReceiveProps(nextProps) {
+    this.setState({ projectInfo: nextProps.projectsInfo });  
+  }*/
+
+  addNewProject = () => {
+    console.log('add new project(new addNewproject() + drawboard() )');
+  }
+
+  render() { //console.log('projectlist render');
+    var self = this;
+    return (
+      <div>
+        {this.state.TabItems.map(function(item, index){
+          var projectTabitem = item;
+          const projectTasks = [];
+          self.state.projectsInfo.map(function(item, index) {
+              if(item.projectId  === projectTabitem.id && item.id.length > 0) {
+                projectTasks.push(item);
+              }
+          });
+          //console.log('projecttask'); console.log(projectTasks);
+          return <Project 
+                    key={index}
+                    TabItem={item} 
+                    projectTaskInfo={projectTasks}
+                  />
+        })}
+        <div onClick={() => this.addNewProject(true, []) }>Add New</div>
+      </div>
+    )
+  }
+}
+
+
+
+
+/*
+tabs and board will be here
+Task shall load here
+*/
+class Project extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      TabItem: props.TabItem,
+      projectTaskInfo: props.projectTaskInfo,
+    }
+  }
+
+/*componentWillReceiveProps(nextProps) {
+    this.setState({ projectInfo: nextProps.projectsInfo });  
+  }*/
+
+  render() { console.log('project render');
+    const ui = []; const un = [];
+    const ni = []; const nn = [];
+
+    this.state.projectTaskInfo.forEach((item, index) => {
+      if(item.urgent==1 && item.important==1) { 
+            item.type = 'ui'; ui.push(item);
+      }
+      if(item.urgent==1 && item.important==0) {
+          item.type = 'un'; un.push(item);
+      }
+      if(item.urgent==0 && item.important==1) {
+          item.type = 'ni'; ni.push(item);
+      }
+      if(item.urgent==0 && item.important==0) {
+          item.type = 'nn'; nn.push(item);
+      }
+    });
+
+    return (
+      <div className="project">
+        <div class="projectTabitem">
+          {console.log(this.state.TabItem)}
+          <Tab 
+              tabitem={this.state.TabItem}
+              tabId={this.state.TabItem.id}
+          />
+        </div>
+        {
+        //  this.state.boardProjectId == this.state.activeProjectId && 
+          <div className={this.state.activeProjectId}>
+          <div className="parent">
+            <div className="div1"> </div>
+            <div className="div2"> <p>Important</p></div>
+            <div className="div3"> <p>Not Important</p></div>
+            <div className="div4"> <p className="verticaltext">Urgent</p></div>
+           {/* <div className="div5"> <Quadrant type="ui" quadrantTasks={ui} projectId={this.state.boardProjectId} /></div>
+            <div className="div6"> <Quadrant type="un" quadrantTasks={un} projectId={this.state.boardProjectId} /></div>*/}
+            <div className="div7"> <p className="verticaltext">Not Urgent</p></div>
+            {/*<div className="div8"> <Quadrant type="ni" quadrantTasks={ni} projectId={this.state.boardProjectId} /></div>
+            <div className="div9"> <Quadrant type="nn" quadrantTasks={nn} projectId={this.state.boardProjectId} /></div>*/}
+          </div>
+          </div>
+      }
+    </div>
+    )
+  }
+}
+
+
+class Tab extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isInEditMode: false,
+      tab: props.tabitem,
+      tabId: props.tabitem.id,
+      projectTabName: props.tabitem.projectName,
+    }
+    console.log('tab constr');
+    console.log(this.state.tab);
+  }  
+
+  displayBoard = () => {
+    console.log('board shall display of this projectTab clicked');
+  }
+
+  handleChange = (e) => { 
+    this.setState({ projectTabName: e.target.value });
+  }
+
+  changeEditMode =()=>{
+    this.setState({
+      isInEditMode: !this.state.isInEditMode
+    })
+  }
+
+  handleKeyDown = (e) => {
+    if (e.keyCode === KEYCODE_ENTER || e.keyCode === KEYCODE_TAB) {
+      this.changeEditMode();
+      //save also
+      if(this.state.projectTabName.length > 0 || this.state.tabId !== 'NEW') {
+        this.updateProjectName();
+      }
+    }
+    if(e.keyCode === KEYCODE_ESC) {
+      //Do not save and close new input
+      this.setState({ isInEditMode: !this.state.isInEditMode })
+      if(this.state.tabId=="NEW") {
+        this.setState({projectTabName: ''})
+      } else {
+        this.setState({projectTabName: this.state.tab.projectTabName})
+      }
+      //this.state.addNewTabManage(true, []);
+    }
+  }
+
+  updateProjectName = () => {
+    console.log('update projecttab name here');
+  }
+
+  renderEditView =()=>{
+    return (
+      <div>
+        <input 
+        className="projectTab"
+        type="text"
+        //autofocus={this.state.autofocus}
+        defaultValue={this.state.projectTabName}
+        //ref={this.setWrapperRef}
+        //ref={this.childRef}
+        onChange={this.handleChange}
+        onKeyDown={this.handleKeyDown}
+      />
+      </div>
+      )
+  }
+
+  renderTextView =()=>{
+    return (
+      <div 
+          onClick={this.displayBoard}
+          onDoubleClick={this.changeEditMode} 
+          className="projectTab"
+        >
+        {this.state.projectTabName}
+      </div>
+      )
+  }
+
+  render() { console.log('Tab render');
+    return (
+      this.state.isInEditMode  ?
+      this.renderEditView() :
+      this.renderTextView()
+    )
+  }
+
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+</script>
+{/literal}

@@ -1,0 +1,139 @@
+<div class="row">
+		<div class="col-md-12">
+					  <div class="panel panel-white">		  
+						  <div class="panel-body">
+							  <div class="row">
+							     	<div class="col-md-12">		
+										{include file="../../partials/error_list.html"}
+									
+										{if $success_msg}
+											<div class="alert alert-success" role="alert">
+										    	{$success_msg}
+											</div>
+										{/if}
+									</div>						     
+							   </div>
+							<form ng-non-bindable id="form" method="post" class="form-horizontal" action=""> 
+							   <div class="section section-title-border">
+									<h3>User Information</h3>
+							   </div>
+							   <div class="row">
+						        		<div class="col-md-7">
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					First Name &nbsp; <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					<input class="form-control" type="text" name="firstName" value="{$user->firstName}" maxlength="20"/>
+							        				</div>
+							        			</div>
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					Last Name &nbsp; <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					<input class="form-control" type="text" name="lastName" value="{$user->lastName}" maxlength="20"/>
+							        				</div>
+							        			</div>
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					Default Email &nbsp; <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					<input class="form-control" type="email" name="email" value="{$user->email}"/>
+							        				</div>
+							        			</div>
+												<div class="form-group">
+													<label class="col-md-3 control-label">
+														Phone &nbsp; <span class="req_field">*</span>
+													</label>
+													<div class="col-md-9">
+														<input class="form-control" type="text" name="userPhone" value="{$user->userPhone}"/>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-3 control-label">
+														Email Address Prefix &nbsp; <span class="req_field">*</span>
+													</label>
+													<div class="col-md-9">
+														<input class="form-control" type="text" name="emailAddressPrefix" value="{$user->emailAddressPrefix}"/>
+														<em class="note">Do not include space or any special characters</em>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-3 control-label">
+														Email Signature
+													</label>
+													<div class="col-md-9">
+														<textarea class="form-control" name="emailSignature" rows="8">{$user->emailSignature}</textarea>
+														<em class="note">Supported place holders are: &#123;AGENT_NAME}, &#123;AGENT_EMAIL}, &#123;AGENT_COMPANY_NAME}, &#123;AGENT_PHONE}</em>
+													</div>
+												</div>
+							        	</div>			
+							   </div> 
+							    <div class="section section-title-border">
+									<h3>Login Information</h3>
+							   	</div>
+							   <div class="row">
+						        		<div class="col-md-7">
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					UserName &nbsp; <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					 {if $path_info.action eq "add"}	
+							                            	<input type="text" class="form-control" name="username" value="{$user->username}" maxlength="20"/>
+							                            {else}
+							                            	<strong>{$user->username}</strong>
+							                            {/if}
+							        				</div>
+							        			</div>
+							        			
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					Password &nbsp; <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					  <input type="password" class="form-control" name="password" value="" maxlength="50"/>
+								                            {if $path_info.action eq "edit"}	
+								                            	<em class="note">(Leave password blank to keep it unchanged)</em>
+								                            {/if}	
+							        				</div>
+							        			</div>
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					Confirm Password &nbsp; <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					 <input type="password" class="form-control" name="confirmPassword" value="" maxlength="50"/>	
+								                            {if $path_info.action eq "edit"}	
+								                            <em class="note">(Leave this field blank to keep it unchanged)</em>
+								                            {/if}	
+							        				</div>
+							        			</div>
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">
+							        					User Role <span class="req_field">*</span>
+							        				</label>
+							        				<div class="col-md-9">
+							        					 <select name="role" class="form-control">
+							                                <option value="">Please Select</option>
+							                                {html_options options=$userRoles selected=$user->role}     
+							                            </select>	
+							        				</div>
+							        			</div>
+							        			<div class="form-group">
+							        				<label class="col-md-3 control-label">&nbsp;
+							        				</label>
+							        				<div class="col-md-9">
+														<input type="submit" name="btnAction" class="btn btn-success" id="button1"  value="{if $path_info.action eq "add"}Add User{else}Update{/if}"/>
+														<button name="cancel" class="btn btn-default"  type="button" onclick = "window.location = '/admin/users/'; ">Cancel</button>					        				
+													</div>
+							        			</div>
+							        	</div>			
+							   </div>
+						 </form>   
+					</div>
+			   </div>
+		</div>
+</div>

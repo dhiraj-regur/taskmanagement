@@ -1,0 +1,143 @@
+
+{literal}
+<style type="text/css">
+	.file-row:hover{
+		font-weight: 800;
+		font-size: 14px;
+	}
+</style>
+{/literal}
+<div class="row">
+	<div class="col-md-12">
+		{if $message != ""}
+		<div class="panel panel-white">
+			<div class="panel-body">
+				{$message}
+			</div>
+		</div>
+		{/if}
+		<div class="panel panel-white">
+			<div class="panel-body">
+				{foreach from=$breadcrumb item=item}
+					<a href="{$item.url}"> {$item.label} </a> /
+				{/foreach}
+			</div>
+		</div>
+		<div class="panel panel-white">			
+			<div class="panel-body">					   
+				{if $log == ""}						
+				   	{foreach from=$directories item=item}					   
+				   		<div class="row" style="margin-bottom:5px">
+							<div class="col-lg-12 col-md-12 col-sm-12">
+								<i class="fa fa-folder" style="margin-right:10px"></i>
+					   			<a href="/admin/logs/logsviewer?directory={$dirUrl}{$item}">{$item}</a>
+					   		</div>
+					   	</div>						   
+					{/foreach}
+					   
+					{foreach from=$files item=value key=key}			   
+						<div class="row file-row" style="margin-bottom:5px">
+				   			<div class="col-lg-6 col-md-6 col-sm-6">
+					   			<i class="fa fa-file" style="margin-right:10px"></i> 
+						   		<a href="/admin/logs/logsviewer?directory={$dirUrl}&file={$key}">
+						   			{$key} 
+						   		</a>
+					   		</div>
+					   		<div class="col-lg-1 col-md-1 col-sm-1">
+					   			{$fileStats[$key].size} {$fileStats[$key].sizeunit}
+					   		</div>
+					   		<div class="col-lg-2 col-md-2 col-sm-2">
+					   			{$fileStats[$key].mtime}
+					   		</div>
+					   		<div class="col-lg-1 col-md-1 col-sm-1">
+					   			<a href="/admin/logs/download?directory={$dirUrl}&file={$key}&retUrl={$dirUrl}">Download</a>
+					   		</div>
+					   		<div class="col-lg-2 col-md-1 col-sm-1">
+					   			<a href="javascript:void(0)" title="rename" onclick="javascript:rename('{$dirUrl}', '{$key}')">
+					   				Rename |
+					   			</a>
+					   			<a href="javascript:void(0)" title="delete" onclick="javascript:del('{$dirUrl}', '{$key}')">
+					   				Delete
+					   			</a>
+					   		</div>
+				   		</div>					   
+					{/foreach}
+				{else}
+   					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12">
+							<pre>{$log}</pre>
+					   	</div>
+					</div>	
+   				{/if}
+					
+			</div>
+		</div>       
+	</div> 
+</div>
+
+{literal}
+<script>
+
+function del(directory, filename){
+	if(window.confirm("Are you sure you want to delete: " + filename +" ?")){
+		if(directory.indexOf("..") >= 0)
+			alert("Directory does not exists.");
+		else{
+			jQuery.post("/admin/logs/delete", {"file" : filename, "directory" : directory }, function(result){
+				location.reload();
+				alert(result);
+			});
+		}
+	}
+	else
+		return false;
+}
+
+function rename(directory, filename){
+	var newFilename = window.prompt("new filename", filename);
+	if(newFilename){
+		if(directory.indexOf("..") >= 0)
+			alert("Directory does not exists.");
+		else{
+			if(isValidFilename(newFilename)){
+				jQuery.post("/admin/logs/rename", {"oldFilename" : filename, "newFilename" : newFilename, "directory" : directory}, function(result){
+					location.reload();
+					alert(result);
+				});	
+			}
+			else{
+				var invalidCharacters = '\ / " ? * : \' | < >';
+				alert("File name can not contain any of the following characters:\n" + invalidCharacters);
+			}
+		}			
+	}
+}
+
+function isValidFilename(filename){
+	
+	if(filename.indexOf("\\") >= 0)
+		return false;
+	else if(filename.indexOf("/") >= 0)
+		return false;
+	else if(filename.indexOf("'") >= 0)
+		return false;
+	else if(filename.indexOf("\"") >= 0)
+		return false;
+	else if(filename.indexOf("|") >= 0)
+		return false;
+	else if(filename.indexOf(":") >= 0)
+		return false;
+	else if(filename.indexOf("?") >= 0)
+		return false;
+	else if(filename.indexOf("<") >= 0)
+		return false;
+	else if(filename.indexOf(">") >= 0)
+		return false;
+	else if(filename.indexOf("*") >= 0)
+		return false;
+	
+	return true;
+}
+
+</script>
+{/literal}

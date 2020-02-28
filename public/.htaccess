@@ -1,0 +1,38 @@
+Options -Indexes
+
+RewriteEngine On 
+
+#### Main website page rewrite rules ####
+
+RewriteRule ^$ /front/index.php [NC,L]
+RewriteRule ^index\.php$ /front/index.php [NC,L]
+RewriteRule ^index.html$ /front/index.php [NC,L]
+RewriteRule ^about.html$ /front/about.php [NC,L]
+RewriteRule ^contact.html$ /front/contact.php [NC,L]
+RewriteRule ^affiliates.html$ /front/affiliates.php [NC,L]
+RewriteRule ^terms.html$ /front/terms.php [NC,L]
+RewriteRule ^privacy.html$ /front/privacy.php [NC,L]
+RewriteRule ^removals.html$ /front/removals.php [NC,L]
+RewriteRule ^removals14day.html$ /front/removals14day.php [NC,L]
+RewriteRule ^conveyancing.html$ /front/conveyancing.php [NC,L]
+RewriteRule ^partner-terms.html$ /front/partner-terms.php [NC,L]
+RewriteRule ^send-affiliates\.php$ /front/send-affiliates.php [NC,L]
+
+
+#### Main website page rewrite rules ####
+
+RewriteCond %{SERVER_PORT} 80
+RewriteCond %{HTTP_HOST} ^www.pinlocal.com|pinlocal.com|pinlocal5-dev.rollingcodes.io
+RewriteCond %{REQUEST_URI} ^/admin|/crm|/company|/register
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [NC,R,L]
+
+#Access-Control-Allow-Origin: *
+
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+
+RewriteRule ^.*$ /index-mvc.php [NC,L]
+
+Redirect 301 /PinLocal_Ltd_T_C.pdf /PinLocal_Ltd_TCS.pdf

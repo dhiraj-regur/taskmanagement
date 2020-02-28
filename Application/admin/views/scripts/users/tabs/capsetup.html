@@ -1,0 +1,58 @@
+<div class="panel panel-white">
+
+	<div class="panel-body ">
+		<div class="section section-title-border">
+			<h3 >Cap Setup</h3>
+		</div>
+		<span class="alert alert-success p-v-xs col-sm-9 ng-binding ng-hide" ng-hide="success_msg == ''" ng-bind="success_msg"></span> 
+		<span class="alert alert-danger col-sm-9 " ng-repeat="error in errors">[[error]]</span>
+		<div class=" col-sm-12 form-horizontal">
+			<div class="col-sm-6 col-xs-12">
+
+				<div class="form-group">
+				
+				
+					<div class="col-sm-5 col-xs-5">
+						<b>Lead type category</b>
+					</div>
+				
+				
+					<div class="col-sm-5 col-xs-5">
+						<b>Daily Cap Limit</b>
+					</div>
+
+				</div>
+				
+				<div class="rules-criteria">
+				
+						<div class="form-group" ng-repeat="(ltcId,value) in caps.ltc " class="rules" data-rule="ltc_[[ltcId]]" >
+					
+								<!--  lead type category column -->
+							<div class="col-sm-5 col-xs-5" >
+							
+								<label ng-repeat="ltc in leadTypeCategories | filter:ltcId:ltc.id">
+										[[ltc.name]]
+								</label >
+
+							</div>
+							
+							
+							<!--   cap limit column -->
+							<div class="col-sm-5 col-xs-5">				  
+								 <input type="text"  class="form-control" ng-keypress="filterValue($event)"  ng-model="caps.ltc[ltcId].caps.dailyCaps">
+							</div>
+
+						</div>
+						
+				</div>
+
+				<hr>
+
+				<div class="form-group text-center">
+					<button class="btn btn-success" ng-disabled = "btnDisabled"  ng-click=saveCapSettings() >Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

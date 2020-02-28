@@ -1,0 +1,182 @@
+<div class="systemNotifications">
+
+<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-white">			
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="display" id="systemNotificationList"  width="100%">
+							<thead>
+								<tr>
+									<th>Id</th>
+									<th>Type</th>
+									<th>Message</th>
+									<th>Slug</th>
+									<th>Event</th>
+									<th>Date</th>
+									<th>Seen</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td ></td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<th>Id</th>
+									<th>Type</th>
+									<th>Message</th>
+									<th>Slug</th>
+									<th>Event</th>
+									<th>Date</th>
+									<th>Seen</th>
+									<th>Action</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>       
+	</div> 
+</div>
+
+{literal}
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+	systemNotificationList();
+	jQuery("div#systemNotificationList_wrapper .toolbar").html('System Notifications');
+
+
+});
+var systemNotificationTable;
+function systemNotificationList(){
+
+		systemNotificationTable = jQuery('#systemNotificationList').DataTable(
+		{
+			"destroy": true, 
+			"paging": true,
+			"pagingType": "full_numbers",
+			"dom": '<"dataTables-header""H"<"toolbar col-md-9 no-p-l"><"col-md-3 no-p-r"f><"top-pagination"p<"top-length"li>>>t<"dataTables-footer""F"ip>',
+			"serverSide": true,
+			"processing": false,				
+			"pageLength": 100,
+			"order": [[ 3, "desc" ]],
+			"ajax":{
+	        	"url":"/admin/systemnotifications/list/",
+	        	"type":"POST"
+			},
+			"language": {
+                "paginate": {
+                  "first": "<i class='fa  fa-fast-backward'></i>",
+                  "last": "<i class='fa  fa-fast-forward'></i>",
+                  "next": "<i class='fa fa-forward'></i>",
+                  "previous": "<i class='fa fa-backward'></i>"
+                }
+              },
+			"columns": [
+				{
+					"data":"id",
+					"name":"id"
+				},
+				{
+					"orderable": false,
+					"searchable": false,
+					"data":'formatedType',
+					"name": "type",
+				},
+				{
+					"orderable": false,
+					"data":'message',
+					"name": "message",
+				},
+				{
+					"data":'slug',
+					"name": "slug",
+				},
+				{
+					"data":'event',
+					"name": "event",
+				},
+				{
+					"data":'dateTime',
+					"name": "dateTime",
+					"data":null,
+					"name": "dateTime",
+					"render": function(data,type,row){
+						
+						newDate = dateFormat(data.dateTime);                	
+                      	return newDate;
+					}
+				},
+				{
+					"data":null,
+					"orderable": false,
+					"searchable": false,
+					"render": function(data,type,row){
+						var seen = '';
+						if(data.seen == '1'){
+							seen = "Yes";
+						}
+						else{
+							seen = "No";
+						}
+						return seen;
+					}
+				},
+				{
+ 					"data":null,
+ 					"searchable":false,
+ 					"orderable":false,
+ 					"className": "text-center",
+ 					"render": function ( data, type, row ) 
+ 					{
+ 						var link = '';
+ 						if(data.seen=='0'){
+ 							link = '<a href="javascript:void(0)" title="Mark as seen" onclick="markAsSeen('+data.id+')" class="btn btn-primary action-btn" target="_blank"><span aria-hidden="true" class="icon-eye"></span></a>';
+ 						}
+ 						return link;
+	 				}
+  		   		}
+			],
+			"createdRow": function( row, data, dataIndex){
+                if( data.type ==  pinLocalSysNotificationTypes.debug || data.type ==  pinLocalSysNotificationTypes.notice || data.type ==  pinLocalSysNotificationTypes.error || data.type ==  pinLocalSysNotificationTypes.critical || data.type ==  pinLocalSysNotificationTypes.emergency){
+                	jQuery(row).addClass('sysNotificaitonCriticalBg');
+                }
+                else if(data.type ==  pinLocalSysNotificationTypes.alert){
+                	jQuery(row).addClass('sysNotificaitonAlertBg');
+                }
+                else if(data.type ==  pinLocalSysNotificationTypes.warning){
+                	jQuery(row).addClass('sysNotificaitonWarningBg');
+                }
+            }
+		});
+}
+
+function markAsSeen(id){
+	
+	jQuery.post('/admin/systemnotifications/markasseen',{"id": id}, function(data, textStatus){
+		
+		if(textStatus == "success")
+		{
+			if(parseInt(data.status)==1)
+			{
+				alert(data.message);
+				systemNotificationTable.draw();
+			}
+			else
+			{
+				alert(data.message);
+			}
+		}
+		else
+		{
+			alert("Unable to complete the request");
+		}					
+	},"json");
+}
+</script>
+{/literal}
