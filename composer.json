@@ -1,0 +1,23 @@
+{
+	"require-dev":
+	{
+		"phpunit/phpunit": "4.8.36"
+	},
+    "require": {
+    	"monolog/monolog": "1.23.*",
+        "massivescale/celery-php": "2.1.*",
+        "php-amqplib/php-amqplib": "^2.7",
+        "predis/predis": "^1.1",
+		"phpoffice/phpexcel": "^1.8",
+		"vlucas/phpdotenv": "^3.3",
+		"chargeover/redlock-php": "^1.0",
+		"aws/aws-sdk-php": "^3.107",
+		"stripe/stripe-php": "^6.43"
+      },
+	  
+	 "autoload" : {
+		"classmap" : [
+			"Application/Classes"
+		]
+	}
+  }
