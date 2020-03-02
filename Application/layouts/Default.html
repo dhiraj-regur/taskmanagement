@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	
+	
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   
+		<title>{$page_title}</title>
+   
+    <meta name="description" content="We source thousands of domestic, commercial and international removals leads per month. Sign up now and start with 20 free leads today!"/>
+
+    <meta name="format-detection" content="telephone=no" />
+		<link href="/assets/plugins/fontawesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
+    <link href="/front/css/style.css" rel="stylesheet">
+		<link rel="icon" href="/front/favicon.png">
+		<!--
+		<script src="/front/js/jquery.min.js"></script>
+		<script src="/front/js/bootstrap.min.js"></script>   
+    <script src="/front/js/jquery.validate.min.js"></script>
+    <script src="/front/js/modernizr.custom.22439.js"></script>
+		<script src="/front/js/custom.js"></script>
+		<script src="/front/js/jquery.scrollTo.min.js"></script>    
+		<script src="/front/js/init.js"></script>
+		-->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    {$style_sheets}
+		{$header_scripts}
+  
+  </head>
+  <body>
+		
+    <div id="wrapper">
+
+      
+       <!-- content begin -->
+    
+    	{$view_content}
+   
+   		<!-- content end -->
+
+
+    </div><!-- /#wrapper -->
+
+    
+    {if $smarty.capture.page_js ne ""}
+            {$smarty.capture.page_js}
+    {/if}
+
+  </body>
+</html>

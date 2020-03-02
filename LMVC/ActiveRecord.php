@@ -399,6 +399,7 @@ abstract class LMVC_ActiveRecord
 
 		$sql = "SELECT $field_list FROM " . $this->tableName . " WHERE $where_clause LIMIT 0,1";
 
+		//
 		//$sql = "SELECT $field_list FROM ". $this->tableName ." WHERE $property = '$property_value' LIMIT 0,1";
 		//echo $sql;
 		$res = $this->findAll($sql,DB_FETCHMODE_ASSOC);

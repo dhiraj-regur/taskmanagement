@@ -1,0 +1,408 @@
+@charset "UTF-8";
+
+.container800 {
+	width: 800px;
+	margin: auto;
+    padding: 0 15px;
+}
+.mb-10 {
+	margin-bottom: 10px;
+}
+
+form .has-error .glyphicon-remove{ 
+ 	right:0px !important;
+}
+.error{
+	color: #a94442;
+	display: block;
+	width: 100%;	
+}
+.msg{
+	color: #468847;
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    border-radius:4px;
+    padding:11px;
+    margin:0px 0px 15px;
+    }
+   
+#accordion h4{margin:0px;}
+#accordion ul{padding:0px 0px 0px 12px;}
+#accordion ul li {list-style-type:none; !important}
+.select_all{margin:0px 0px 0px 12px !important;}
+
+#forgot_password #has_account
+{
+    font-size: 25px;
+    color: #333333;
+    text-align: center;
+    padding-top: 55px;
+    padding-bottom: 35px;
+    clear: both;
+}
+#forgot_password #has_account a
+{
+	color: #00c572;
+    border-bottom: 2px solid #00c572;
+    text-decoration: none !important;
+}
+#forgot_pass,#reset_pass,#logout
+{
+	max-width: 400px;
+    margin: auto;
+}
+form#forgot_pass .has-icon .form-control,form#reset_pass .has-icon .form-control {
+    padding-left: 50px;
+}
+form#forgot_pass .form-control,form#reset_pass .form-control {
+    background-color: #fff;
+    border-color: #c0cdd1;
+    color: #333333;
+}
+form#forgot_pass .has-icon .icon,form#reset_pass .has-icon .icon {
+    display: block !important;
+    position: absolute;
+    left: 15px;
+    top: 0px;
+    height: 46px;
+    line-height: 46px;
+    color: #164859;
+}
+form#reset_pass .has-icon .icon {
+	
+	left: 30px;
+
+	}
+.forgotpass_success .sec_lg,#reser_password .sec_lg,#logout_success .sec_lg {
+  margin-bottom: 50px; 
+  }
+
+form#reset_pass .help {
+    margin-left: 2px;
+    padding-top: 7px;
+    display: block;
+    color: #ccc;
+    font-style: italic;
+    font-size: 14px;
+}
+form#reset_pass .form-control-feedback
+{
+	right:10px !important;
+}
+
+
+
+#signup_complete_form .container950 {
+	padding: 0px;
+}
+
+#adderssInfo #lookupAddressLink {
+	padding-bottom: 15px;
+}
+
+#adderssInfo #lookupAddressWrapper .find-button {
+	margin-top: 10px;
+}
+
+#adderssInfo .btn-find-address, .btn-manual {
+	color: #fff;
+    background-color: #44c7ff;
+    height: 32px;
+    padding: 6px 10px;
+	font-size: 14px;
+    font-weight: 700;
+    text-transform: none;
+    min-width: auto;
+}
+
+.btn-retry {
+	color: #fff;
+    background-color: #00c572;
+    height: 32px;
+    padding: 6px 10px;
+	font-size: 14px;
+    font-weight: 700;
+    text-transform: none;
+    min-width: auto;
+}
+
+
+#adderssInfo .btn-find-address:hover, .btn-manual:hover, .btn-retry:hover {
+	background-color: #0d262f;	
+}
+
+
+form#register .form-group div[class^=col-sm]{
+	max-width: 100%;
+}
+
+#adderssInfo .link {
+	padding-top: 7px;
+	font-style: italic;
+    font-size: 14px;
+    display: inline-block;
+}
+
+
+form#register .glyphicon-remove.custom {
+	position: relative;
+    top: 3px;
+    line-height: 1;
+    height: 0px;
+    border: 0;
+    width: auto;
+    margin-left: 5px;
+} 
+
+
+form#register .cust-checkboxes .checkbox input[type="checkbox"], .payment-form-wrapper .cust-checkboxes .checkbox input[type="checkbox"] {
+	width: 0px;
+	overflow: hidden;
+	opacity: 0;
+}
+
+form#register .cust-checkboxes .check-icon, .payment-form-wrapper .cust-checkboxes .check-icon {
+	position: absolute;
+    font-size: .8em;
+    line-height: 0;
+    top: 50%;
+    left: 10%;
+    color: rgb(0, 197, 114);
+	
+}
+
+form#register .cust-checkboxes label {
+	margin-left: 35px;
+}
+
+.payment-form-wrapper .cust-checkboxes label {
+	margin-left: 24px;
+    margin-top: 2px; 
+}
+
+form#register .cust-checkboxes .checkbox label span.label {
+	display: block;
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+    color: #888888;
+    font-size: 15px;
+    padding: 0px;
+    vertical-align: sub;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.payment-form-wrapper .cust-checkboxes .checkbox label span.label {
+	display: block;
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+    color: #393939;
+    font-size: 14px;
+    padding: 0px;
+    vertical-align: sub;
+    font-weight: normal;
+    margin-top: 8px;
+    margin-right: 15px;
+}
+
+form#register .cust-checkboxes .checkbox label > span.box {
+	position: absolute;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    width: 27px;
+    height: 27px;
+	margin-right: .5em;
+    left: 0;
+    top: 0;
+}
+
+.payment-form-wrapper .cust-checkboxes .checkbox {
+	height: 32px;
+}
+
+.payment-form-wrapper .cust-checkboxes .checkbox label > span.box {
+	position: absolute;
+    display: inline-block;
+    border: 1px solid #a9a9a9;
+    width: 32px;
+    height: 32px;
+    left: 0;
+    top: 0;
+    background: #fff;
+    margin-left: 5px;
+}
+
+
+form#register .cust-checkboxes .checkbox .check-icon, .payment-form-wrapper .cust-checkboxes .checkbox .check-icon{
+	transform: scale(3) rotateZ(-20deg);
+    opacity: 0;
+    transition: all .3s ease-in;
+}
+
+form#register .cust-checkboxes .checkbox input[type="checkbox"] ~ span.box > .check-icon, 
+.payment-form-wrapper .cust-checkboxes .checkbox input[type="checkbox"] ~ span.box > .check-icon {
+	transform: scale(3) rotateZ(-20deg);
+    opacity: 0;
+    transition: all .3s ease-in;
+}
+
+form#register .cust-checkboxes .checkbox input[type="checkbox"]:checked ~ span.box, 
+.payment-form-wrapper .cust-checkboxes .checkbox input[type="checkbox"]:checked ~ span.box {
+	border-color: rgb(0, 197, 114);
+}
+
+form#register .cust-checkboxes .checkbox input[type="checkbox"]:checked ~ span.box > .check-icon {
+	transform: scale(1) rotateZ(0deg);
+    opacity: 1;
+    font-size: 20px;
+}
+
+.payment-form-wrapper .cust-checkboxes .checkbox input[type="checkbox"]:checked ~ span.box > .check-icon {
+	transform: scale(1) rotateZ(0deg);
+    opacity: 1;
+    font-size: 25px;	
+}
+
+form#register .term-and-condition {
+	max-width: 450px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+
+form#register .lhs-arrow {
+	height: 115px;
+    position: absolute;
+    left: -80px;
+    top: -50px;
+}
+
+form#stripeCustomForm .row {
+	margin-left: -15px;
+    margin-right: -15px;
+}
+
+form#stripeCustomForm .card-expiry {
+	width: 45%;
+}
+
+form#stripeCustomForm .card-expiry-separator {
+	line-height: 2;
+    margin-left: 3%;
+}
+
+form#stripeCustomForm.alert {
+	text-align: left;
+}
+
+#regions_box .headers {
+	padding: 0 7px;
+}
+
+#regions_box .headers .select-all {
+	line-height: 27px;
+	margin: 15px 0px;
+}
+
+#regions_box .headers .label {
+	color: #44c7ff !important;
+	font-weight: bold !important;
+}
+
+form#register .chk_all {
+	margin-bottom: 03px;
+}
+
+form#register label.blue-bold {
+	color: #44c7ff !important;
+	font-weight: bold !important;
+}
+
+.privacy-text {
+	margin: 0px 15px 20px;
+}
+
+.privacy-text p {
+	text-align: left;
+	color: #8d8d8d;
+	font-weight: bold;
+    font-size: 14px;
+    margin: 0px;
+    margin-left: 3px;
+}
+
+.privacy-text .checkbox {
+	margin: 0px;
+}
+.privacy-text .checker {
+	position: absolute;
+    left: -2px;
+}
+
+.privacy-text .gdpr_opt_in_error {
+	margin-top: 3px;	
+}
+
+form#register-form #rc-imageselect, .g-recaptcha {
+	transform:scale(0.91);
+	-webkit-transform:scale(0.91) ;
+	transform-origin:0 0 ;
+	-webkit-transform-origin:0 0 ;
+	margin: 12px 0 0 0;
+}
+
+@media (min-width: 768px) {
+
+	form#register-form #rc-imageselect, .g-recaptcha  {
+		transform:scale(1.05);
+		-webkit-transform:scale(1.05);
+		transform-origin:0 0;
+		-webkit-transform-origin:0 0;
+		margin: 10px 0 10px 0;
+	} 
+}
+
+
+@media (min-width: 350px) {
+	#signup_complete_form .container950 {
+		padding: 0px 15px;	
+	}		
+}
+
+
+
+@media (min-width: 768px) {
+	.payment-form-wrapper .cust-checkboxes label {
+		margin-left: 35px;
+		margin-top: 0px;
+	}
+	
+	.payment-form-wrapper .cust-checkboxes .checkbox label span.label {
+		font-weight: 15px;
+	}
+			
+	.payment-form-wrapper .cust-checkboxes .checkbox label > span.box {
+		margin-left: 15px;
+	}
+	
+	#adderssInfo #lookupAddressWrapper .find-button {
+		margin-top: 0px;
+	}		
+}
+
+
+
+@media (max-width: 500px) {
+	form#register .term-and-condition span.label {
+		margin-top: 0px !important;
+	}	
+}
+
+@media (max-width: 1024px) {
+	form#register .lhs-arrow {
+		display: none;
+	}
+}
+	

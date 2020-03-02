@@ -43,6 +43,7 @@ $front->setLayout('company', '/company/layouts/');
 $front->setApplicationDirectory(APPLICATION_PATH);
 $front->setControllerDirectory(array('admin' => '/admin/controllers/',
     'company' => '/company/controllers/',
+    'taskmanagement' => 'taskmanagement/controllers',
     'scripts' => '/scripts/controllers/',
 	'crm' => '/crm/controllers/',
 	'api' => '/api/controllers/',
@@ -51,7 +52,7 @@ $front->setControllerDirectory(array('admin' => '/admin/controllers/',
 
 
 #regiser plugins
-$companySessionValidator = new Plugins_CompanySessionValidator();
+/*$companySessionValidator = new Plugins_CompanySessionValidator();
 $front->registerPlugin($companySessionValidator);
 
 $adminSessionValidator = new Plugins_AdminSessionValidator();
@@ -59,6 +60,13 @@ $front->registerPlugin($adminSessionValidator);
 
 $CrmSessionValidator = new Plugins_CrmSessionValidator();
 $front->registerPlugin($CrmSessionValidator);
+
+
+$taskmanagementSessionValidator = new Plugins_TaskmanagementSessionValidator();
+$front->registerPlugin($taskmanagementSessionValidator);
+*/
+$DefaultSessionValidator = new Plugins_DefaultSessionValidator();
+$front->registerPlugin($DefaultSessionValidator);
 
 $router = LMVC_Router::getInstance();
 

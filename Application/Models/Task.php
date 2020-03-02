@@ -5,8 +5,8 @@ class Models_Task extends LMVC_ActiveRecord {
 	public $tableName = "tasks";
 	
 	public $id		= "";
-	public $task     = ""; 
-	public $userId		= "";
+	public $task     = "";
+	public $projectId     = "";
 	public $urgent		= "";
 	public $important			= "";
 		
@@ -33,11 +33,15 @@ class Models_Task extends LMVC_ActiveRecord {
 	  return !$this->hasErrors();
 	}
 	
-	public function getTasks($userId) {
-			$sql = "SELECT * FROM $this->tableName WHERE userId = $userId ORDER BY id"; //will not work after userId removal and projectId insert
-			$sql = "SELECT * FROM $this->tableName WHERE projectId = $userId ORDER BY id"; //but this is wrong way
-			$res = $this->findAll($sql,DB_FETCHMODE_ASSOC);
-			return $res;
+	public function getProjectsAndTasks($userId) {
+		$sql = "SELECT p.id as projectId , p.projectName, t.id as id, t.task, t.urgent, t.important
+						FROM `tasks` as t
+						RIGHT JOIN projects p
+						ON t.projectId=p.id
+						WHERE p.userId = ".$userId."
+						ORDER BY p.id,t.id";	
+		$res = $this->findAll($sql,DB_FETCHMODE_ASSOC);
+		return $res;
 	}
 
 	public function updateTask($postArray) {
@@ -50,13 +54,13 @@ class Models_Task extends LMVC_ActiveRecord {
 		} elseif($res) { //update
 				$this->update();
 				die(json_encode($postArray));
-		} else { //create
+		} else { //TODO - check we may not require create from here
 		    foreach ($postArray as $value) {
 		        $fields .= "'".$value."',";
 		    }
-		    $fields = rtrim($fields, ',');
-		    
-		    $sql = "INSERT INTO $this->tableName (id,task,userId,urgent,important) VALUES ($fields)";
+				$fields = rtrim($fields, ',');
+				
+		    $sql = "INSERT INTO $this->tableName (id,task,projectId,urgent,important) VALUES ($fields)";
 		    $result =  self::$db->query($sql);
 		}
 		//return response to textBox props

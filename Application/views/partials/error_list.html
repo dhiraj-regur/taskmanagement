@@ -1,0 +1,12 @@
+{if $error_list|count}<div class="alert alert-error">		<button type="button" class="close" data-dismiss="alert">x</button>		One or more error has occured that needs to be resolved first.		<ul>			{foreach from=$error_list item=message}				<li>{$message}</li>			{/foreach}		</ul></div>
+<!-- <div class="error">
+	One or more error has occured that needs to be resolved first.
+	<ul>
+	{foreach from=$error_list item=message}
+		<li>{$message}</li>
+	{/foreach}
+	
+	</ul>
+</div> -->
+	
+{/if}
