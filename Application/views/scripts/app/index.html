@@ -428,7 +428,12 @@ class Tab extends React.Component {
       if(this.state.tabId=="NEW") {
         this.setState({projectTabName: ''})
       } else {
-        this.setState({projectTabName: this.state.updatedProjectName})
+        //if not updated then keep previous 
+        var keepProjectName = this.state.tab.projectName;
+        if(this.state.updatedProjectName != '') {
+          keepProjectName = this.state.updatedProjectName;
+        }
+        this.setState({projectTabName: keepProjectName})
       }
     }
   }
