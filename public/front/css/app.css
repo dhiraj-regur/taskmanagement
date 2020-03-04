@@ -30,7 +30,7 @@ body {
     writing-mode: vertical-rl; transform: rotate(180deg);
     min-height: 200px; border: 1px solid #777575;
   }
-  .div5 { grid-area: 2 / 2 / 3 / 3; background-color: #FF0000; padding:5px;}
+  .div5 { grid-area: 2 / 2 / 3 / 3; background-color: #D9EAD3; padding:5px;}
   .div6 { grid-area: 2 / 3 / 3 / 4; background-color: #D9EAD3; padding:5px;}
   .div7 { 
     grid-area: 3 / 1 / 4 / 2; text-align: center;background-color: #B7B7B7; font-weight: bold;
@@ -38,10 +38,10 @@ body {
     min-height: 200px; border: 1px solid #777575;
   }
   .div8 { grid-area: 3 / 2 / 4 / 3; background-color: #D9EAD3; padding:5px;}
-  .div9 { grid-area: 3 / 3 / 4 / 4; background-color: #D9D9D9; padding:5px;}
+  .div9 { grid-area: 3 / 3 / 4 / 4; background-color: #D9EAD3; padding:5px;}
 
 .ui {
-  background-color: #FF0000;
+  background-color: #D9D9D9;
 }
 .un {
   background-color: #D9EAD3;
@@ -217,7 +217,7 @@ div[class^="insertItem"]:hover {
 .activeTab  label {
   background: white;
   border-bottom: 1px solid white;
-  z-index: 2;
+  /*z-index: 2;*/
 }
 
 
@@ -233,4 +233,51 @@ div[class^="insertItem"]:hover {
   top: 10px;
 }
 
+/* The Modal (background) */
+.deleteConfirmation {
+   /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.confirm-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}
+.projectCloseYes, .projectCloseNo {
+  float: left;
+  padding: 10px;
+}
+.projectCloseYes button{
+  float: left;
+  background-color: rgb(240, 86, 86);
+  border: 1px solid rgb(253, 4, 4);
+  color: white; 
+  padding: 10px 24px;
+  cursor: pointer;
+}
+.projectCloseNo button{
+  float: left;
+  background-color: #4CAF50;
+  border: 1px solid green;
+  color: white;
+  padding: 10px 24px;
+  cursor: pointer;
+}
+.confirmationOption {
+  content: "";
+  clear: both;
+  display: table;
+}

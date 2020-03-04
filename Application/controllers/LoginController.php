@@ -36,6 +36,9 @@ class LoginController extends LMVC_Controller{
 
 			$password = $this->getRequest()->getPostVar('password');
 
+			$remember = $this->getRequest()->getPostVar('remember');
+
+
 			$retUrl = $this->getRequest()->getPostVar('retURL');
 
 			if(trim($email)=="")
@@ -48,7 +51,7 @@ class LoginController extends LMVC_Controller{
 			if(empty($error_list))
 			{
 				$login = new Models_Taskuser();
-   				$login->fetchByProperty('email',$email);
+   			$login->fetchByProperty('email',$email);
    				
 				if(!$login->isEmpty)
 				{	
@@ -64,6 +67,20 @@ class LoginController extends LMVC_Controller{
 					$user = new Models_Taskuser();
 					$user->fetchByProperty('id',$login->id);
 					LMVC_Session::set('userId',$user->id);
+
+					if($remember == 'on') {
+						setcookie("user_email", $email, time() + (86400 * 30), "/");
+						setcookie("user_password", $password, time() + (86400 * 30), "/");
+					} else {
+						setcookie("user_email", "");
+						setcookie("user_password", "");
+					}
+					
+					//if remember set cookie email and password
+					//if no remember then destroy cookie setcookie
+					//use that issetCokkie in login form email value and password value
+					//in login form if cookie is set checkbox must shown already checked
+					
 					
 					if($retUrl == "")	{
 						header("Location: /app");
@@ -84,9 +101,14 @@ class LoginController extends LMVC_Controller{
 			$retUrl = $this->getRequest()->getVar('retURL');
 		}
 
+		if (!empty($_COOKIE['user_email']) && !empty($_COOKIE['user_password'])) {
+			$this->setViewVar('email', $_COOKIE['user_email']);
+			$this->setViewVar('user_password', $_COOKIE['user_password']);
+		} else {
+			$this->setViewVar('email', $email);
+		}
 		$this->setViewVar('retURL',$retUrl);
-		$this->setViewVar('email', $email);
-		$this->setViewVar('password', $password);
+		//$this->setViewVar('password', $password);
 		$this->setViewVar('error_message',$error_message);
 		$this->setViewVar('error_list',$error_list);
 

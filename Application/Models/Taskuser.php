@@ -8,7 +8,7 @@ class Models_Taskuser extends LMVC_ActiveRecord {
 	public $email			= "";
 	public $password	= "";
 
-	public $dbIgnoreFields = array('id');
+	public $dbIgnoreFields = array('id','remember');
 	
 	public function init()
 	{

@@ -32,7 +32,7 @@ class AppController extends LMVC_Controller {
         return $userinfo;
     }
     
-    public function projecttasksAction() {
+    public function allprojectstasksAction() {
         LMVC_Front::getInstance()->disableLayout(true);
         $taskmanagement = new Models_Task();
         //get session userid
@@ -115,6 +115,20 @@ class AppController extends LMVC_Controller {
         $project = new Models_Project($id);
         if($this->isPost()) {
             $project->deleteProject($id);
+        }
+
+    }
+
+    public function getprojecttasksAction() {
+        LMVC_Front::getInstance()->disableLayout(true);
+        $tasks = new Models_Task();
+        $params = $this->getRequest()->geturiParts();
+        if(isset($params[2]) && is_numeric($params[2])) {
+            $result = $tasks->getTaskCount($params[2]);
+            $result = json_encode($result[0]);
+            die($result);
+        } else {
+            die("Invalid userId");
         }
 
     }

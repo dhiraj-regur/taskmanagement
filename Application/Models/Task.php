@@ -65,7 +65,15 @@ class Models_Task extends LMVC_ActiveRecord {
 		}
 		//return response to textBox props
 	}
-		
+	
+	public function getTaskCount($projectId) {
+		$sql = "SELECT COUNT(id) as taskCount
+						FROM `tasks` as t
+						WHERE t.projectId = ".$projectId;	
+		$res = $this->findAll($sql,DB_FETCHMODE_ASSOC);
+		return $res;
+	}
+
 }
 	
 

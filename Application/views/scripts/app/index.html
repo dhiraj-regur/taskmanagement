@@ -49,7 +49,7 @@ class ProjectTaskFetch extends React.Component {
 
   async componentDidMount() {
     var self = this;
-    await axios.get(`${APP_URL}/projecttasks`)
+    await axios.get(`${APP_URL}/allprojectstasks`)
               .then(response => {
                 const tabinfo = Array.from(new Set(response.data.map(p=>p.projectId)))
                                 .map(id=> {
@@ -132,17 +132,10 @@ class App extends React.Component {
     //this shall add new project with the name 'untitle proejct' and create board means send new data to Project component
     var { [Object.keys(this.state.tabItems).pop()]: lastItem } = this.state.tabItems;
     if(Object.entries(this.state.tabItems).length === 0 || lastItem.id !== 'NEW') {
-      //check if any other project have autofocus property and remove it
-      var tabItemsTemp = this.state.tabItems.filter(function(obj) {
-        if(obj.hasOwnProperty("autofocus")) {
-          delete obj.autofocus;
-        }
-        return obj;
-      });
-      //TODO -recheck
+
       
       //insert into db
-     const newTabValue = {id:'NEW', projectName:'Untitled Project', autofocus: 'autofocus'}
+     const newTabValue = {id:'NEW', projectName:'Untitled Project'}
 
       var url = APP_URL + '/updateproject/';
       const encodeForm = (newTabValue) => {
@@ -182,7 +175,7 @@ class App extends React.Component {
   render() {
     var self = this;
     var projectExist =false;
-    var redirect =  APP_URL + "?projectId=" + this.state.activeProjectId;
+    var redirect =  APP_URL + "?pId=" + this.state.activeProjectId;
     return (
       <React.Fragment>
         {this.state.redirect === true && 
@@ -274,7 +267,7 @@ class Project extends React.Component {
 
   }
 
-  render() {
+  render() { 
     const ui = []; const un = [];
     const ni = []; const nn = [];
 
@@ -354,8 +347,10 @@ class Tab extends React.Component {
       addNewProjectManage: props.addNewProjectManage,
       removeProject: props.removeProject,
       activeTab: props.activeTab,
-      activeTabId: props.activeTabId
-
+      activeTabId: props.activeTabId,
+      updatedProjectName: '',
+      projectDeletePopup: false,
+      taskCount: 0,
     }
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -365,8 +360,11 @@ class Tab extends React.Component {
     this.wrapperRef = node;
   }
 
-  componentWillReceiveProps(nextProps) { //without this activeTab state chnage will not rener Tab
-    this.setState({ activeTab: nextProps.activeTab, activeTabId: nextProps.activeTabId});
+  componentWillReceiveProps(nextProps) { //without this activeTab or activeTabId state change will not rener Tab component
+    this.setState({ 
+      activeTab: nextProps.activeTab, 
+      activeTabId: nextProps.activeTabId,
+    });
   }
 
   componentDidMount() {
@@ -383,6 +381,10 @@ class Tab extends React.Component {
   }
 
   handleClickOutside(event) {
+    if(event.target.classList.contains('deleteConfirmation')) {
+      this.setState({ projectDeletePopup: false });
+      this.projectCloseNo();
+    }
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)  && !event.target.classList.contains('projectTabEdit')) {
       this.updateProjectName();
 
@@ -413,10 +415,10 @@ class Tab extends React.Component {
     e.target.value = temp_value
   }
 
-  handleKeyDown = (e) => { 
+  handleKeyDown = (e) => {
     if (e.keyCode === KEYCODE_ENTER || e.keyCode === KEYCODE_TAB) {
       this.changeEditMode();
-      this.setState({autofocus: ''})
+      this.setState({updatedProjectName: this.state.projectTabName})
       //save also
       this.updateProjectName();
     }
@@ -426,7 +428,7 @@ class Tab extends React.Component {
       if(this.state.tabId=="NEW") {
         this.setState({projectTabName: ''})
       } else {
-        this.setState({projectTabName: this.state.tab.projectTabName})
+        this.setState({projectTabName: this.state.updatedProjectName})
       }
     }
   }
@@ -464,7 +466,38 @@ class Tab extends React.Component {
     }
   }
 
+
+
   projectClose = (e) => {
+    //get the count of task in this project
+    //Project will not give updated taskitems value. it is in each quadrant item state. So better using axios instead
+    //TODO-find way to getvalue from state.
+    var projectId = this.state.tabId;
+    var self = this;
+    var taskCount = 0
+    axios.get(`${APP_URL}/getprojecttasks/`+projectId)
+              .then(response => {
+                  //console.log(response.data.taskCount);
+                  taskCount = response.data.taskCount;
+                  self.setState({ taskCount: taskCount});
+
+                  //if tasks exist display confirmation box else delete project
+                  if(taskCount > 0) {
+                    self.setState({ projectDeletePopup: true})
+                  } else {
+                    self.projectCloseYes();
+                  }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+  }
+
+  projectCloseNo = (e) => {
+    this.setState({ projectDeletePopup: false});
+  }
+
+  projectCloseYes = (e) => {
     //e.preventDefault();
     const deleteTabValue  = {
       id: this.state.tab.id,
@@ -485,6 +518,8 @@ class Tab extends React.Component {
         .catch(function (error) {
             //Display task item update failed!
         });
+
+    this.setState({ projectDeletePopup: false})
   }
 
   renderEditView =()=>{
@@ -508,12 +543,9 @@ class Tab extends React.Component {
   renderTextView =()=>{
     var className = (this.state.activeTab === true) ? "projectTab activeTab" : "projectTab";
     className = className + " tabId-"+this.state.tabId;
-    var linkto = APP_URL + "?projectId=" + this.state.tabId;
-    var afterCloseParams = "?projectId=" + this.state.activeTabId;
-    if(this.state.activeTabId === this.state.tabId) {
-      afterCloseParams = '';
-    }
-    var closeTablink = APP_URL + afterCloseParams;
+    var projectLink = APP_URL + "?pId=" + this.state.tabId;
+    var yesCloseParams = "?pId=" + this.state.activeTabId;                  
+    var yesCloseTablink = APP_URL + yesCloseParams;
     return (
       <ReactRouterDOM.BrowserRouter>
         <div 
@@ -521,10 +553,10 @@ class Tab extends React.Component {
           onDoubleClick={this.changeEditMode} 
           className={className}
         >
-        <Link to={linkto}>
+        <Link to={projectLink}>
           <label>
               {this.state.projectTabName}
-              <Link to={closeTablink}>
+              <Link to={yesCloseTablink}>
                 <span 
                   class='close'
                   onClick={this.projectClose}
@@ -539,11 +571,51 @@ class Tab extends React.Component {
       )
   }
 
-  render() {
+  render() { 
+    if(this.state.projectDeletePopup === true) {
+      var yesCloseParams = "?pId=" + this.state.activeTabId;
+      var noCloseParams  = "?pId=" + this.state.activeTabId;
+      if(this.state.activeTabId === this.state.tabId) {
+        yesCloseParams = '';
+        noCloseParams = "?pId=" + this.state.activeTabId;
+      }                     
+      var yesCloseTablink = APP_URL + yesCloseParams;
+      var noCloseTablink = APP_URL + noCloseParams;
+
+      var taskContainStr = (this.state.taskCount > 1) ? this.state.taskCount + ' tasks':  this.state.taskCount + ' task';
+    }
+
     return ( 
-      this.state.isInEditMode ? 
-      this.renderEditView() :
-      this.renderTextView()
+      <React.Fragment>
+      {
+        this.state.isInEditMode ? 
+        this.renderEditView() :
+        this.renderTextView()
+      }
+
+      {this.state.projectDeletePopup === true && (
+      <div className="deleteConfirmation">
+        <div class="confirm-content">
+          <p>This project contains {taskContainStr}. </p>
+          <p>Are you sure you want to delete it?</p><br />
+          <div class="confirmationOption">
+            <div class="projectCloseYes">
+              <Link to={yesCloseTablink}>
+                <button onClick={this.projectCloseYes}>Yes</button>
+              </Link>
+            </div>
+            <div class="projectCloseNo">
+              {/*<Link to={noCloseTablink}>*/}
+                <button onClick={this.projectCloseNo}>No</button>
+              {/*</Link>*/}
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
+
+      
+    </React.Fragment>
     )
   }
 }
@@ -572,7 +644,7 @@ class Quadrant extends React.Component {
         if(this.state.type =='un') {  urgent=1;  important = 0;}
         if(this.state.type =='ni') {  urgent=0;  important = 1;}
         if(this.state.type =='nn') {  urgent=0;  important = 0;}
-        const newItem = {id: 'NEW', task: '', projectId: this.state.projectId, urgent:urgent, important:important, type:this.state.type, autofocus:'autofocus'};
+        const newItem = {id: 'NEW', task: '', projectId: this.state.projectId, urgent:urgent, important:important, type:this.state.type};
         this.setState(
           { tasks: [...this.state.tasks, newItem]}
         )
@@ -593,6 +665,8 @@ class Quadrant extends React.Component {
       this.setState({ addItem: !this.state.addItem })
     }
   }
+
+
 
 
   render() {
@@ -702,7 +776,6 @@ class Item extends React.Component {
             //setState itemId for new record
             self.setState({
               item: response.data,
-              autofocus:''
             })
         })
         .catch(function (error) {
@@ -737,12 +810,12 @@ class Item extends React.Component {
     if(e.keyCode === KEYCODE_ESC) {
       //Do not save and close new input
       this.setState({ isInEditMode: !this.state.isInEditMode })
-      if(this.state.itemId=="NEW") {
-        this.setState({task: '', autofocus:''})
+      if(this.state.item.id == "NEW") {
+        this.setState({task: ''})
+        this.state.addNewManage(true, []);
       } else {
         this.setState({task: this.state.item.task})
       }
-      this.state.addNewManage(true, []);
     }
   }
 
@@ -810,11 +883,9 @@ const Taskmanagement = () => (
 function getParams(location) {
   const searchParams = new URLSearchParams(location.search);
   return {
-    projectId: searchParams.get("projectId") || ""
+    projectId: searchParams.get("pId") || ""
   };
 }
-
-
 
 
 ReactDOM.render(
