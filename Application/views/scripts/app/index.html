@@ -806,6 +806,9 @@ class Item extends React.Component {
       if(this.state.task.length > 0 || this.state.itemId !== 'NEW') {
         this.updateItemValue();
       }
+      if(this.state.task.length === 0 && this.state.itemId === 'NEW') {
+        this.state.addNewManage(true, []);
+      }
     }
     if(e.keyCode === KEYCODE_ESC) {
       //Do not save and close new input
