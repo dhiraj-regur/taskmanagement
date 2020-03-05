@@ -247,11 +247,16 @@ class Project extends React.Component {
       activeTab: false,
       allTabItems: props.allTabItems,
       deleteId: 0,
+      taskCount: Object.keys(props.projectTaskInfo).length,
     }
   }
 
   componentWillReceiveProps(nextProps) { //without this Project will not render with new activeProjectId value
-    this.setState({ activeProjectId: nextProps.activeProjectId, tabItem: nextProps.tabItem});  
+    this.setState({ 
+      activeProjectId: nextProps.activeProjectId, 
+      tabItem: nextProps.tabItem,
+     // taskCount: nextProps.taskCount
+    });  
   }
 
   
@@ -267,7 +272,13 @@ class Project extends React.Component {
 
   }
 
-  render() { 
+  updateTaskCount = (updatedTaskListCount) => {
+    //get add or delete task status and then update projectTaskCount
+    var projectTaskCount = this.state.taskCount + updatedTaskListCount;
+    this.setState({ taskCount: projectTaskCount })
+  }
+
+  render() {
     const ui = []; const un = [];
     const ni = []; const nn = [];
 
@@ -311,7 +322,9 @@ class Project extends React.Component {
               removeProject={this.removeProject}
               activeTab={activeTab}
               activeTabId={this.state.activeProjectId}
+              taskCount={this.state.taskCount}
           />
+
           <div 
             className="board projectBoard"
             style={{display: this.state.projectId == this.state.activeProjectId ? '' : 'none' }}
@@ -320,11 +333,32 @@ class Project extends React.Component {
             <div className="div2"> <p>Important</p></div>
             <div className="div3"> <p>Not Important</p></div>
             <div className="div4"> <p className="verticaltext">Urgent</p></div>
-            <div className="div5"> <Quadrant type="ui" quadrantTasks={ui} projectId={this.state.projectId} /></div>
-            <div className="div6"> <Quadrant type="un" quadrantTasks={un} projectId={this.state.projectId} /></div>
+            <div className="div5"> <Quadrant 
+                                      type="ui" quadrantTasks={ui} projectInfo={this.state.tabitem}
+                                      projectId={this.state.projectId} 
+                                      projectTaskCount={this.updateTaskCount}
+
+                                    />
+            </div>
+            <div className="div6"> <Quadrant 
+                                      type="un" quadrantTasks={un} projectInfo={this.state.tabitem}
+                                      projectId={this.state.projectId} 
+                                      projectTaskCount={this.updateTaskCount}
+                                    />
+            </div>
             <div className="div7"> <p className="verticaltext">Not Urgent</p></div>
-            <div className="div8"> <Quadrant type="ni" quadrantTasks={ni} projectId={this.state.projectId} /></div>
-            <div className="div9"> <Quadrant type="nn" quadrantTasks={nn} projectId={this.state.projectId} /></div>
+            <div className="div8"> <Quadrant 
+                                      type="ni" quadrantTasks={ni} projectInfo={this.state.tabitem}
+                                      projectId={this.state.projectId} 
+                                      projectTaskCount={this.updateTaskCount}
+                                    />
+            </div>
+            <div className="div9"> <Quadrant 
+                                      type="nn" quadrantTasks={nn} projectInfo={this.state.tabitem}
+                                      projectId={this.state.projectId} 
+                                      projectTaskCount={this.updateTaskCount}
+                                    />
+            </div>
           </div>
         </div>
         }
@@ -350,7 +384,7 @@ class Tab extends React.Component {
       activeTabId: props.activeTabId,
       updatedProjectName: '',
       projectDeletePopup: false,
-      taskCount: 0,
+      taskCount: props.taskCount,
     }
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -364,6 +398,7 @@ class Tab extends React.Component {
     this.setState({ 
       activeTab: nextProps.activeTab, 
       activeTabId: nextProps.activeTabId,
+      taskCount: nextProps.taskCount
     });
   }
 
@@ -386,6 +421,7 @@ class Tab extends React.Component {
       this.projectCloseNo();
     }
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)  && !event.target.classList.contains('projectTabEdit')) {
+      this.setState({updatedProjectName: this.state.projectTabName})
       this.updateProjectName();
 
       //also change the editmode
@@ -428,7 +464,12 @@ class Tab extends React.Component {
       if(this.state.tabId=="NEW") {
         this.setState({projectTabName: ''})
       } else {
-        this.setState({projectTabName: this.state.updatedProjectName})
+        //if not updated then keep previous 
+        var keepProjectName = this.state.tab.projectName;
+        if(this.state.updatedProjectName != '') {
+          keepProjectName = this.state.updatedProjectName;
+        }
+        this.setState({projectTabName: keepProjectName})
       }
     }
   }
@@ -469,28 +510,12 @@ class Tab extends React.Component {
 
 
   projectClose = (e) => {
-    //get the count of task in this project
-    //Project will not give updated taskitems value. it is in each quadrant item state. So better using axios instead
-    //TODO-find way to getvalue from state.
-    var projectId = this.state.tabId;
-    var self = this;
-    var taskCount = 0
-    axios.get(`${APP_URL}/getprojecttasks/`+projectId)
-              .then(response => {
-                  //console.log(response.data.taskCount);
-                  taskCount = response.data.taskCount;
-                  self.setState({ taskCount: taskCount});
-
-                  //if tasks exist display confirmation box else delete project
-                  if(taskCount > 0) {
-                    self.setState({ projectDeletePopup: true})
-                  } else {
-                    self.projectCloseYes();
-                  }
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+    //if tasks exist display confirmation box else delete project
+    if(this.state.taskCount > 0) {
+      this.setState({ projectDeletePopup: true})
+    } else {
+      this.projectCloseYes();
+    }
   }
 
   projectCloseNo = (e) => {
@@ -571,7 +596,7 @@ class Tab extends React.Component {
       )
   }
 
-  render() { 
+  render() {
     if(this.state.projectDeletePopup === true) {
       var yesCloseParams = "?pId=" + this.state.activeTabId;
       var noCloseParams  = "?pId=" + this.state.activeTabId;
@@ -628,13 +653,19 @@ class Quadrant extends React.Component {
       addItem: true,
       type: props.type,
       projectId: props.projectId,
+      projectInfo: props.projectInfo, //?? getting undefined 
       tasks: props.quadrantTasks,
-      insertItemClass: 'insertItem'
+      insertItemClass: 'insertItem',
+      updateTaskList: props.projectTaskCount,
     }
   }
 
+  updateTaskCount = (update) => {
+    //called by ITEM when delete'
+    this.state.updateTaskList(update);
+  }
 
-  addNewItem=(childAddNewItemState, childItem, editAndInsertClick = false) => {
+  addNewItem = (childAddNewItemState, childItem, editAndInsertClick = false) => {
     //Get last item in taskitems
     var { [Object.keys(this.state.tasks).pop()]: lastItem } = this.state.tasks;
     if(this.state.addItem === true && childAddNewItemState === true){//ready to add 'NEW' blank item
@@ -644,7 +675,8 @@ class Quadrant extends React.Component {
         if(this.state.type =='un') {  urgent=1;  important = 0;}
         if(this.state.type =='ni') {  urgent=0;  important = 1;}
         if(this.state.type =='nn') {  urgent=0;  important = 0;}
-        const newItem = {id: 'NEW', task: '', projectId: this.state.projectId, urgent:urgent, important:important, type:this.state.type};
+        //TODO- New does not have projectName. this.state.tasks have it. projectInfo getting empty here
+        const newItem = {projectId: this.state.projectId, id: 'NEW', task: '', urgent:urgent, important:important, type:this.state.type};
         this.setState(
           { tasks: [...this.state.tasks, newItem]}
         )
@@ -656,6 +688,8 @@ class Quadrant extends React.Component {
       //add child item in task state
       if(Object.entries(childItem).length !== 0) {
         taskTemp =  [...taskTemp, childItem];
+        //callback to Quadrant to update TaskCount
+        this.state.updateTaskList(1);
       }
       this.setState({ tasks: taskTemp} )
     }
@@ -671,6 +705,7 @@ class Quadrant extends React.Component {
 
   render() {
     var addNewItemFunction = this.addNewItem;
+    var updateTaskCountFunction = this.updateTaskCount;
     var addTaskTextToggle = (this.state.addItem === true) ? 'Add new task item here' : 'Cancel adding task';
     var insertItemClassToggle = (this.state.addItem === true) ? 'insertItem-'+this.state.type : 'cancelInsert';
     
@@ -682,6 +717,7 @@ class Quadrant extends React.Component {
                       taskitem={item} 
                       updateItemState={addNewItemFunction} 
                       insertItemClass={insertItemClassToggle}
+                      updateTaskCount={updateTaskCountFunction}
                   />
         })}
         <div className={insertItemClassToggle} onClick={() => this.addNewItem(true, []) }>{addTaskTextToggle}</div>
@@ -706,6 +742,7 @@ class Item extends React.Component {
       insertItemClass: props.insertItemClass,
       setEditInsertClick: 'insertItem-'+ props.taskitem.type,
       cancelInsert:'cancelInsert',
+      updateTaskCount: props.updateTaskCount,
     }
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -727,10 +764,10 @@ class Item extends React.Component {
   
   handleClickOutside(event) { 
     if (this.wrapperRef && !this.wrapperRef.contains(event.target) && !event.target.classList.contains(this.state.cancelInsert)) {
-      if(this.state.task.length > 0 || this.state.itemId !== 'NEW') {
+      if(this.state.task.length > 0 || this.state.item.id !== 'NEW') {
         this.updateItemValue();
       } 
-      if(this.state.task.length === 0 && this.state.itemId === 'NEW') {
+      if(this.state.task.length === 0 && this.state.item.id === 'NEW') {
         this.state.addNewManage(true, []);
       }
       if(event.target.classList.contains(this.state.setEditInsertClick)) {
@@ -750,9 +787,9 @@ class Item extends React.Component {
   updateItemValue =()=>{
     //Update in DB and render in item
     const newItemValue  = {
+      projectId: this.state.item.projectId,
       id: this.state.item.id,
       task: this.state.task,
-      projectId: this.state.item.projectId,
       urgent: this.state.item.urgent,
       important:this.state.item.important
     };
@@ -769,6 +806,9 @@ class Item extends React.Component {
     var newChildren ='';
     axios.post(url, encodeForm(newItemValue), {headers: {'Accept': 'application/json'}})
         .then(function (response) {
+            if(response.data == '') {
+              self.state.updateTaskCount(-1);
+            } 
             if(additemsState === true) newChildren = response.data;
 
             //communicating with Quadrant
@@ -803,8 +843,11 @@ class Item extends React.Component {
     if (e.keyCode === KEYCODE_ENTER || e.keyCode === KEYCODE_TAB) {
       this.changeEditMode();
       //save also
-      if(this.state.task.length > 0 || this.state.itemId !== 'NEW') {
+      if(this.state.task.length > 0 || this.state.item.id !== 'NEW') {
         this.updateItemValue();
+      }
+      if(this.state.task.length === 0 && this.state.item.id === 'NEW') {
+        this.state.addNewManage(true, []);
       }
     }
     if(e.keyCode === KEYCODE_ESC) {

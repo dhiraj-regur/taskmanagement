@@ -37,18 +37,20 @@ $dataCache = Models_SQLCache::getInstance();
 //echo "DB: ".  $db->getOne("SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()))") ."<br/>";
 //echo "PHP: ". date('Y-m-d H:i:s');
 #set layouts if any
-$front->setLayout('company', '/company/layouts/');
+//$front->setLayout('company', '/company/layouts/');
 
 #set directories
 $front->setApplicationDirectory(APPLICATION_PATH);
-$front->setControllerDirectory(array('admin' => '/admin/controllers/',
+$front->setControllerDirectory(array(
+		/*'admin' => '/admin/controllers/',
     'company' => '/company/controllers/',
-    'taskmanagement' => 'taskmanagement/controllers',
+    'taskmanagement' => 'taskmanagement/controllers',*/
     'scripts' => '/scripts/controllers/',
-	'crm' => '/crm/controllers/',
-	'api' => '/api/controllers/',
-	'apiv1' => '/api/controllers/v1/',
-	'partnerv1' => '/api/controllers/partner/v1/'));
+	//'crm' => '/crm/controllers/',
+	//'api' => '/api/controllers/',
+	//'apiv1' => '/api/controllers/v1/',
+	//'partnerv1' => '/api/controllers/partner/v1/'
+));
 
 
 #regiser plugins
