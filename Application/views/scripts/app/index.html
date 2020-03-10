@@ -248,6 +248,7 @@ class Project extends React.Component {
       allTabItems: props.allTabItems,
       deleteId: 0,
       taskCount: Object.keys(props.projectTaskInfo).length,
+      lastUpdatedQuadrant: '',
     }
   }
 
@@ -255,11 +256,15 @@ class Project extends React.Component {
     this.setState({ 
       activeProjectId: nextProps.activeProjectId, 
       tabItem: nextProps.tabItem,
-     // taskCount: nextProps.taskCount
+      lastUpdatedQuadrant: nextProps.lastUpdatedQuadrant
     });  
   }
 
-  
+  updatedQuadrant = (quadrant) => {
+    //I shall decide which quadrant is lastupdated and pass it as props to quadrant
+    this.setState({ lastUpdatedQuadrant: quadrant })
+  }
+
   removeProject = (deleteProjectId) => {
     this.setState({
       deleteId: deleteProjectId
@@ -337,13 +342,16 @@ class Project extends React.Component {
                                       type="ui" quadrantTasks={ui} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
-
+                                      updatedQuadrant={this.updatedQuadrant}
+                                      lastUpdatedQuadrant={this.state.lastUpdatedQuadrant}
                                     />
             </div>
             <div className="div6"> <Quadrant 
                                       type="un" quadrantTasks={un} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
+                                      updatedQuadrant={this.updatedQuadrant}
+                                      lastUpdatedQuadrant={this.state.lastUpdatedQuadrant}
                                     />
             </div>
             <div className="div7"> <p className="verticaltext">Not Urgent</p></div>
@@ -351,12 +359,16 @@ class Project extends React.Component {
                                       type="ni" quadrantTasks={ni} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
+                                      updatedQuadrant={this.updatedQuadrant}
+                                      lastUpdatedQuadrant={this.state.lastUpdatedQuadrant}
                                     />
             </div>
             <div className="div9"> <Quadrant 
                                       type="nn" quadrantTasks={nn} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
+                                      updatedQuadrant={this.updatedQuadrant}
+                                      lastUpdatedQuadrant={this.state.lastUpdatedQuadrant}
                                     />
             </div>
           </div>
@@ -452,7 +464,7 @@ class Tab extends React.Component {
   }
 
   handleKeyDown = (e) => {
-    if (e.keyCode === KEYCODE_ENTER || e.keyCode === KEYCODE_TAB) {
+      if (e.keyCode === KEYCODE_ENTER) {
       this.changeEditMode();
       this.setState({updatedProjectName: this.state.projectTabName})
       //save also
@@ -657,6 +669,47 @@ class Quadrant extends React.Component {
       tasks: props.quadrantTasks,
       insertItemClass: 'insertItem',
       updateTaskList: props.projectTaskCount,
+      updatedQuadrant: props.updatedQuadrant,
+      lastUpdatedQuadrant: props.lastUpdatedQuadrant,
+      addUpdateToggle: true,
+    }
+    this.onKeyPressed = this.onKeyPressed.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) { 
+    this.setState({
+      //updatedQuadrant: nextProps.updatedQuadrant,
+      lastUpdatedQuadrant: nextProps.lastUpdatedQuadrant
+    });  
+  }
+
+
+  componentWillMount() {
+    document.addEventListener("keydown", this.onKeyPressed.bind(this));
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyPressed.bind(this));
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  handleClickOutside(event) { 
+    if (event.target.classList.contains("taskitem")) {
+      this.setState({ addUpdateToggle: true })
+    }
+    
+  }
+
+  onKeyPressed(e) {
+    if ((e.keyCode === KEYCODE_ENTER) && this.state.lastUpdatedQuadrant ==  this.state.type) {
+      this.setState({ lastUpdatedQuadrant: '' })
+      this.setState({ addUpdateToggle: !this.state.addUpdateToggle })
+      if(this.state.addUpdateToggle === true) {
+        // if(e.keyCode === KEYCODE_TAB) { e.preventDefault() }
+        this.addNewItem(true, [], false, true);
+      }
     }
   }
 
@@ -666,6 +719,7 @@ class Quadrant extends React.Component {
   }
 
   addNewItem = (childAddNewItemState, childItem, editAndInsertClick = false) => {
+    this.state.updatedQuadrant(this.state.type);
     //Get last item in taskitems
     var { [Object.keys(this.state.tasks).pop()]: lastItem } = this.state.tasks;
     if(this.state.addItem === true && childAddNewItemState === true){//ready to add 'NEW' blank item
@@ -691,7 +745,9 @@ class Quadrant extends React.Component {
         //callback to Quadrant to update TaskCount
         this.state.updateTaskList(1);
       }
-      this.setState({ tasks: taskTemp} )
+      this.setState({ tasks: taskTemp })
+      //update Project with new lastupdatedQuadrant
+      this.setState({ addUpdateToggle: false })
     }
 
     //change state addItem
@@ -708,7 +764,7 @@ class Quadrant extends React.Component {
     var updateTaskCountFunction = this.updateTaskCount;
     var addTaskTextToggle = (this.state.addItem === true) ? 'Add new task item here' : 'Cancel adding task';
     var insertItemClassToggle = (this.state.addItem === true) ? 'insertItem-'+this.state.type : 'cancelInsert';
-    
+    var self = this;
     return (
       <div>
         {this.state.tasks.map(function(item, index){
@@ -718,6 +774,8 @@ class Quadrant extends React.Component {
                       updateItemState={addNewItemFunction} 
                       insertItemClass={insertItemClassToggle}
                       updateTaskCount={updateTaskCountFunction}
+                      updatedQuadrant={self.state.updatedQuadrant}
+                      lastUpdatedQuadrant={self.state.lastUpdatedQuadrant}
                   />
         })}
         <div className={insertItemClassToggle} onClick={() => this.addNewItem(true, []) }>{addTaskTextToggle}</div>
@@ -743,6 +801,8 @@ class Item extends React.Component {
       setEditInsertClick: 'insertItem-'+ props.taskitem.type,
       cancelInsert:'cancelInsert',
       updateTaskCount: props.updateTaskCount,
+      updatedQuadrant: props.updatedQuadrant,
+      lastUpdatedQuadrant: props.lastUpdatedQuadrant,
     }
 
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -810,12 +870,14 @@ class Item extends React.Component {
               self.state.updateTaskCount(-1);
             } 
             if(additemsState === true) newChildren = response.data;
-
+           
+            var newItem = response.data;
+            newItem.type = self.state.item.type;
             //communicating with Quadrant
             self.state.addNewManage(additemsState, newChildren);
             //setState itemId for new record
             self.setState({
-              item: response.data,
+              item: newItem,
             })
         })
         .catch(function (error) {
@@ -840,7 +902,7 @@ class Item extends React.Component {
   }
   handleKeyDown = (e) => {
 
-    if (e.keyCode === KEYCODE_ENTER || e.keyCode === KEYCODE_TAB) {
+    if (e.keyCode === KEYCODE_ENTER) {
       this.changeEditMode();
       //save also
       if(this.state.task.length > 0 || this.state.item.id !== 'NEW') {
@@ -890,7 +952,7 @@ class Item extends React.Component {
 
   renderTextView =()=>{
     return (
-      <div onDoubleClick={this.changeEditMode}>
+      <div onDoubleClick={this.changeEditMode} className="taskitem">
         {this.state.task}
       </div>
       )
