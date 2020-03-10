@@ -4,11 +4,12 @@ class Models_Task extends LMVC_ActiveRecord {
 
 	public $tableName = "tasks";
 	
-	public $id		= "";
-	public $task     = "";
-	public $projectId     = "";
+	public $id				= "";
+	public $task     	= "";
+	public $projectId = "";
 	public $urgent		= "";
-	public $important			= "";
+	public $important	= "";
+	public $duedate		= "";
 		
 	public $dbIgnoreFields = array('id');
 	
@@ -34,7 +35,7 @@ class Models_Task extends LMVC_ActiveRecord {
 	}
 	
 	public function getProjectsAndTasks($userId) {
-		$sql = "SELECT p.id as projectId , p.projectName, t.id as id, t.task, t.urgent, t.important
+		$sql = "SELECT p.id as projectId , p.projectName, t.id as id, t.task, t.urgent, t.important, t.duedate
 						FROM `tasks` as t
 						RIGHT JOIN projects p
 						ON t.projectId=p.id
@@ -52,6 +53,12 @@ class Models_Task extends LMVC_ActiveRecord {
 		if($res && empty($postArray['task'])) {
 			$this->delete("id = ".$id);
 		} elseif($res) { //update
+				if(empty($postArray["duedate"])) {
+					//print_r($this); 
+					//$this->duedate = NULL;
+				}  //die();
+				
+				
 				$this->update();
 				die(json_encode($postArray));
 		} else { //TODO - check we may not require create from here

@@ -65,13 +65,15 @@ body {
   background-color: #D9D9D9;
 }
 input {
-    width: 100%;
+    width: 80%;
+    float: left;
 }
 
 /*Task Item related*/
 div[class^="insertItem"] {
   background-color: rgb(214, 247, 160);
   opacity: 0.8;
+  clear:both;
 }
 div[class^="insertItem"]:hover {
   background-color: rgb(238, 232, 143);
@@ -80,7 +82,9 @@ div[class^="insertItem"]:hover {
 }
 .cancelInsert {
   background-color: rgb(245, 167, 122);
-  opacity: 0.8;
+  /*opacity: 0.8;*/
+  width: 80%;
+  /*margin: 20px 0px 0px 0px;*/
 }
 .cancelInsert:hover {
   background-color: rgb(245, 114, 97);
@@ -292,4 +296,59 @@ div[class^="insertItem"]:hover {
   content: "";
   clear: both;
   display: table;
+}
+
+.item {
+  clear:both;
+}
+.taskitem {
+  float:left;
+  width: 80%;
+}
+.duedate {
+  float:right;
+}
+.duedate {
+  opacity: 0.5;
+}
+.duedate:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+.calendarInput {
+  width: 15%;
+  float:right;
+}
+.noDueDate {
+  padding-left: 2px;
+}
+.noDueDate:hover {
+  color: red;
+}
+
+
+
+/*calendar 
+https://stackoverflow.com/questions/58531654/how-to-import-react-modules-from-an-html-file-with-no-npm-webpack*/
+
+.calendar-container {
+  /*width: 260px;*/
+  text-align: end;
+}
+
+.container {
+  padding: 20px;
+}
+
+.date-button {
+  width: 100%;
+  border-radius: 2px;
+}
+
+.form-control {
+  display: none;
+}
+
+.rdtDays, .rdtTime {
+  border: 1px solid #ebebeb;
 }

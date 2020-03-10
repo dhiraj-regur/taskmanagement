@@ -94,9 +94,11 @@ class AppController extends LMVC_Controller {
 
         if(isset($_POST["id"])) 	$id = $_POST['id'];
         $task = new Models_Task($id);
-
+       
+        
         if($this->isPost()) {
             $task->getPostData();
+            if(empty($_POST["duedate"]))  $task->duedate = NULL;
             if($id=='NEW') {
                 $id = $task->create();
                 $newTask = $_POST;
