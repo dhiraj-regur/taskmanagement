@@ -46,6 +46,7 @@ class Models_Task extends LMVC_ActiveRecord {
 	}
 
 	public function updateTask($postArray) {
+		
 		$id = $this->id;
 		$sql = "SELECT id FROM ". $this->tableName ." WHERE id = $id";
 		$fields ='';
@@ -54,23 +55,13 @@ class Models_Task extends LMVC_ActiveRecord {
 			$this->delete("id = ".$id);
 		} elseif($res) { //update
 				if(empty($postArray["duedate"])) {
-					//print_r($this); 
-					//$this->duedate = NULL;
-				}  //die();
-				
-				
-				$this->update();
+					$sql = "UPDATE $this->tableName SET `duedate` = NULL WHERE id = $id";
+		    	$result =  $this->query($sql);
+				} else {
+					$this->update();
+				}
 				die(json_encode($postArray));
-		} else { //TODO - check we may not require create from here
-		    foreach ($postArray as $value) {
-		        $fields .= "'".$value."',";
-		    }
-				$fields = rtrim($fields, ',');
-				
-		    $sql = "INSERT INTO $this->tableName (id,task,projectId,urgent,important) VALUES ($fields)";
-		    $result =  self::$db->query($sql);
 		}
-		//return response to textBox props
 	}
 	
 	public function getTaskCount($projectId) {
@@ -80,6 +71,19 @@ class Models_Task extends LMVC_ActiveRecord {
 		$res = $this->findAll($sql,DB_FETCHMODE_ASSOC);
 		return $res;
 	}
+
+	public function getDueDateData() {
+		$sql = "SELECT u.id AS userId, u.name AS userName, u.email, p.id AS pId, p.projectname, t.id AS taskId, t.task, t.duedate 
+						FROM tasks t 
+						JOIN projects p ON t.projectId=p.id 
+						JOIN users u ON p.userId=u.id 
+						WHERE t.duedate = DATE(NOW())";
+						
+		$res = $this->findAll($sql,DB_FETCHMODE_ASSOC);
+		return $res;
+	}
+	
+	//TODO - write function to mark those tasks whose mail has been sent already to its user email
 
 }
 	

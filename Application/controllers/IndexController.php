@@ -25,7 +25,7 @@ class IndexController extends LMVC_Controller{
 			$retUrl = $_SERVER['REQUEST_URI'];
 			if($retUrl == "/") {
 				header("Location: /login");
-			}	else { echo "index dieelse=";die($retUrl);
+			}	else {
 				header("Location: /login?retURL=$retUrl");
 			}			
 			
@@ -48,18 +48,6 @@ class IndexController extends LMVC_Controller{
 									);
 			return $userinfo;
 	}
-
-	
-
-
-
-
-
-
-
-
-
-
 
 }
 

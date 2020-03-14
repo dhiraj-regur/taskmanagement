@@ -17,7 +17,8 @@ class Plugins_DefaultSessionValidator{
 		$this->exemptedProperties['logout'] = array('index','success');
 
 		$this->exemptedProperties['register'] = array('index','success','signupcomplete');
-
+		
+		$this->exemptedProperties['reminder'] = array('index');
 		
 		if($request->getModuleName() == "Default")
 

@@ -14,6 +14,14 @@ body {
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   /*padding-left: 20px;*/
+  
+}
+.board p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 }
 
   .div1 { grid-area: 1 / 1 / 2 / 2; background-color: #B7B7B7; }
@@ -51,6 +59,7 @@ body {
     grid-area: 3 / 3 / 4 / 4; background-color: #D9EAD3; padding:5px;
     border-bottom: 1px solid #afecaf; border-right: 1px solid #afecaf;  
   }
+
 
 .ui {
   background-color: #D9D9D9;
@@ -300,6 +309,7 @@ div[class^="insertItem"]:hover {
 
 .item {
   clear:both;
+  position: relative;
 }
 .taskitem {
   float:left;
@@ -309,7 +319,12 @@ div[class^="insertItem"]:hover {
   float:right;
 }
 .duedate {
-  opacity: 0.5;
+  opacity: 1;
+  position: absolute;
+  right: 0px;
+}
+.rdtOpen {
+  z-index: 1;
 }
 .duedate:hover {
   opacity: 1;
@@ -325,12 +340,24 @@ div[class^="insertItem"]:hover {
 .noDueDate:hover {
   color: red;
 }
+.setTime {
+  width: 100%;
+}
+.setTime:hover {
+  cursor: pointer;
+  background: rgb(116, 155, 240);
+  width: 100%;
+  color: #fff;
+}
+.rdtTimeToggle {
+  display: none;
+}
+.calendarIcon:hover {
+  opacity: 1;
+  color: green;
+}
 
-
-
-/*calendar 
-https://stackoverflow.com/questions/58531654/how-to-import-react-modules-from-an-html-file-with-no-npm-webpack*/
-
+/*calendar css*/
 .calendar-container {
   /*width: 260px;*/
   text-align: end;

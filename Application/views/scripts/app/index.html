@@ -6,14 +6,13 @@
 <script src="https://unpkg.com/react-router/umd/react-router.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js" crossorigin></script>
 
-<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/1.4.1/react-datepicker.js"></script>
--->
-
-<!--<script src="https://unpkg.com/react-datetime-picker@2.7.1/dist/DateTimePicker.js"></script>-->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/react-datetime/3.0.0/react-datetime.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/react-datetime/3.0.0/css/react-datetime.min.css" rel="stylesheet" type="text/css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"></script>
+
 
 
 <link href="/front/css/app.css" rel="stylesheet">
@@ -311,8 +310,6 @@ class Project extends React.Component {
           item.type = 'nn'; nn.push(item);
       }
     });
-//console.log("project Render ProjectTask")
-//console.log(this.state.projectTaskInfo)
 
     var activeTab = (this.state.projectId == this.state.activeProjectId) ? true : false;
     var showProject = true;
@@ -859,18 +856,12 @@ class Item extends React.Component {
 
   updateItemValue =(date='')=>{
     //Update in DB and render in item
-    console.log("updateItemValue")
-
     var newdate = this.state.duedate;
-  
-    console.log(typeof newdate)
-    console.log(date)
-    if(date != '' && date != 'reset') { alert('null')
+    if(date != '' && date != 'reset') {
       newdate = date;
     } else if(newdate === undefined || date == 'reset') {
       newdate =''
     }
-
 
     const newItemValue  = {
       projectId: this.state.item.projectId,
@@ -879,10 +870,7 @@ class Item extends React.Component {
       urgent: this.state.item.urgent,
       important:this.state.item.important,
       duedate: newdate,
-       //this.state.duedate //we need most updated duedate entered
     };
-
-    console.log(newItemValue)
 
     var url = APP_URL + '/updatetask/';
     const encodeForm = (newItemValue) => {
@@ -925,20 +913,6 @@ class Item extends React.Component {
         isInEditMode: !this.state.isInEditMode
       })
     }
-  }
-
-
-  changeCalendarMode =()=>{
-    //by default calendar icons shall be there for all non-duedate tasks
-    //on hover it shall appear
-    //onclick shall display calendar
-    //on input it shall store duedate for that task
-    //task having due date, by default there due date shall appear/calendar icon shall appear
-    //on clicking existing duedate/calendar icon it shall appear calendar with existing date
-    //on giving input it shall update the date for that task
-    //if null then shall delete the duedate
-    //icon/date shall appear adjacent to the task item
-
   }
 
   handleChange = (e) => { 
@@ -997,12 +971,9 @@ class Item extends React.Component {
 
   renderTextView =()=>{
     return (
-      
       <div onDoubleClick={this.changeEditMode} className="taskitem">
         {this.state.task}
       </div>
-      
-      
       )
   }
 
@@ -1027,17 +998,13 @@ class Duedate extends React.Component {
     super(props);
     this.state = {
       item: props.item,
-    //  duedate: props.duedate,
       isInCalEditMode: false,
-     // date: null, 
       isOpen: false,
       date: props.duedate,
       updateDate: props.updateDate
     }
     this.setWrapperRef = this.setWrapperRef.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
-    //const [state, setState]=useState({ date: null, isOpen: false });
-    
   }
 
   setWrapperRef(node) {
@@ -1058,45 +1025,61 @@ class Duedate extends React.Component {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
 
-  handleClickOutside(event) { //if(event.target.classList.contains('deleteConfirmation')) {
-   // console.log(event.target)
-    if (this.state.isOpen && this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      //TODO - if no date prior then leave it
-      console.log(event._d)
-      var newdate = moment(event._d).format("YYYY-MM-DD")
-      console.log(this.state.date)
-      if(this.state.date === undefined) {
-        newdate = '';
-      }
-      this.setState({
-        isOpen: !this.state.isOpen,
-        date: newdate,
-      })
-      //also save the datetime for this tsakitem
-      this.state.updateDate(newdate);
-    }
-  }
 
   openCalendar = () => {
+    //display set date selected
     this.setState({
       isOpen: !this.state.isOpen
     })
   }
 
+  //on outside click no date change just close calendar
+  handleClickOutside(event) {
+    if (this.state.isOpen && this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.setState({
+        isOpen: !this.state.isOpen,
+       // date: newdate,
+      })
+    }
+  }
+
+  //on Date selection save the date Changed
+  saveDateChange = (e) => {
+    var newdate = moment(e._d).format("YYYY-MM-DD");
+    this.setState({
+      date: newdate,
+      isOpen: !this.state.isOpen
+    })
+    this.state.updateDate(newdate);
+  }
+
+  //If setbutton activated then setDate onclick
+  setDate =()=> {
+    var newdate = moment(this.state.date).format("YYYY-MM-DD");
+    if(this.state.date === undefined) {
+        newdate = '';
+      } else {
+        newdate = this.state.date;
+      }
+    this.setState({
+      isOpen: !this.state.isOpen,
+      date: newdate,
+    })
+    //also save the datetime for this tsakitem
+    this.state.updateDate(newdate);  
+  }
+
   handleDateChange = (e) => {
-    var newdate = moment(e._d).format("YYYY-MM-DD")
+    var newdate = moment(e._d).format("YYYY-MM-DD");
     this.setState({
       date: newdate,
       //isOpen: !this.state.isOpen
     })
-    //console.log("handleDateChange")
-    //console.log(newdate)
-    //console.log(this.state.date)
     //this.state.updateDate(newdate);
   }
   
+  //remove the duedate
   noDueDate = () => {
-    console.log('I will reset')
     this.setState({
       date: '',
     })
@@ -1106,149 +1089,32 @@ class Duedate extends React.Component {
 
 
   render() {
+    moment.defaultFormat = "DD.MM.YYYY";
+    var dateSelected = moment(moment(this.state.date).toDate(), moment.defaultFormat).toDate();
     return (
          <div className="duedate calendar-container" ref={this.setWrapperRef}>
           { this.state.date ?
             <React.Fragment>
             <span onClick={this.openCalendar}>{moment(this.state.date).format("YYYY-MM-DD")} 
             </span>
-            <span className="noDueDate" onClick={this.noDueDate}> x</span>
+            <span className="noDueDate" onClick={this.noDueDate}><i class="far fa-calendar-times"></i></span>
             </React.Fragment>
             :
-            <span onClick={this.openCalendar}>{/*<i class="far fa-calendar-plus"></i>*/}Add Due Date</span>
+            <span onClick={this.openCalendar} className="calendarIcon"><i class="far fa-calendar-plus"></i></span>
           }
 
           { this.state.isOpen && 
-            <Datetime input={false} onChange={this.handleDateChange} ></Datetime>
+            <React.Fragment>
+              <Datetime input={false} onChange={this.saveDateChange} value={dateSelected}></Datetime>
+             {/*<Datetime input={false} onChange={this.handleDateChange} value={dateSelected}></Datetime>
+             <button className="setTime" onClick={this.setDate}>SetTime</button>*/}
+            </React.Fragment>
           }
-          
          </div>
-          
     )
   }
-
-
 }
 
-const Duedate12 = (props) => {
-        const wrapperRef = useRef();
-        const [state, setState]=useState({ date: props.duedate, isOpen: false, item: props.item, updateDate: props.updateDate });
-
-        const handleDateChange = useCallback(
-                                  date => setState(
-                                              prevState => ({ ...prevState, date }),
-                                              ),           
-                                  [setState],
-                                );
-
-        const openCalendar = useCallback(() => setState(prevState => ({ ...prevState, isOpen: !prevState.isOpen })), [setState]);
-
-        const handleClickOutside = useCallback(({ target }) => {
-          if (state.isOpen && wrapperRef && !wrapperRef.current.contains(target)) {
-            setState(prevState => ({ ...prevState, isOpen: false }));
-            //also save the datetime for this tsakitem
-            state.updateDate(state.date);
-          }
-        },
-        [state.isOpen, wrapperRef]);
-
-        useEffect(
-          () => {
-            document.addEventListener("mousedown", handleClickOutside);
-
-            return () => {
-              document.removeEventListener("mousedown", handleClickOutside);
-            };
-          },
-          [handleClickOutside]
-        );
-
-        return (
-         <div className="duedate calendar-container" ref={wrapperRef}>
-          { state.date ?
-            <span onClick={openCalendar}>{moment(state.date).format("YYYY-MM-DD")} </span> :
-            <span onClick={openCalendar}>Add Due Date</span>
-          }
-
-          { state.isOpen && 
-            <Datetime input={false} onChange={handleDateChange}></Datetime>}
-           {/*<div className="calendar-container" ref={wrapperRef}>
-            <button 
-              className="uk-button uk-button-primary date-button" 
-              onClick={openCalendar}>
-              {!state.isOpen ? "Select Date" : "Close"}
-            </button>
-
-            { state.isOpen && <Datetime input={false} onChange={handleDateChange}></Datetime>}
-           </div>
-           { state.date && <p>Selected Date: {moment(state.date).format("YYYY-MM-DD")}</p> }
-          */}
-         </div>
-
-
-        );
-      }
-
-class Duedate2 extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      item: props.item,
-      duedate: props.duedate,
-      isInCalEditMode: false,
-     // date: null, 
-      isOpen: false,
-      date: new Date(),
-    }
-   // this.setWrapperRef = this.setWrapperRef.bind(this);
-    //const [state, setState]=useState({ date: null, isOpen: false });
-  }
-
-  /*setWrapperRef(node) {
-    this.wrapperRef = node;
-  }*/
-  openCalendar = () => {
-    this.setState({
-      isOpen: !this.state.isOpen
-    })
-  }
-
-  handleDateChange = () => {
-    this.setState({
-      date: this.state.duedate
-    })
-  }
-
-  onChange = date => this.setState({ date })
-
-  render() {
-    return (
-
-      <div className="container">
-        <DateTime
-          onChange={this.onChange}
-          value={this.state.date}
-          />
-
-
-           {/*
-          <div className="calendar-container" ref="{wrapperRef}">
-            <button className="uk-button uk-button-primary date-button" onClick={this.openCalendar}>
-              {!this.state.isOpen ? "Select Date" : "Close"}
-            </button>
-            { this.state.isOpen && 
-              <Datetime input={false} onChange={this.handleDateChange}></Datetime>
-
-            }
-           </div>
-          */}
-           {/* state.date && <p>Selected Date: {moment(state.date).format("MM/DD/YYYY hh:mm a")}</p> */}
-         </div>
-          
-    )
-  }
-
-}  
 
 const Taskmanagement = () => (
   <React.Fragment>
