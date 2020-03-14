@@ -13,7 +13,6 @@ class ReminderController extends LMVC_Controller{
 	}
 
   public function indexAction() {
-    //get 
     //$host = $_SERVER['HTTP_HOST'];
     $tasks = new Models_Task();
     $lists = $tasks->getDueDateData();
@@ -51,12 +50,13 @@ class ReminderController extends LMVC_Controller{
         $to = 'dhiraj.tekade@regur.net';//$email
         $subject = "Scheduled Task Today ". date("Y-m-d");
         $body = $content;        
-        mail($to,$subject,$body,$headers);
+        //mail($to,$subject,$body,$headers);
+
+        //$mailer = Helpers_Mailer_Factory::getMailer('PHPMailer');
         
-        //$mailer = Helpers_Mailer_Factory::getMailer('Mandrill');
         //$mailer->setApiKey('3ACQi8WOxJy40zQ08wYeHw');
-       // $mailer->setTags('task_schedule');
-       // $rtn = $mailer->sendMail($from, $to, $subject,nl2br($body));
+        //$mailer->setTags('task_schedule');
+        //$rtn = $mailer->sendMail($from, $to, $subject,nl2br($body));
 
       // echo $content;
     }

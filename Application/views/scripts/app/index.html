@@ -980,14 +980,15 @@ class Item extends React.Component {
 
   render() {
     return (
-      <div class="item">
-        {this.state.isInEditMode  ?
-        this.renderEditView() :
-        this.renderTextView()}
-        
-        <Duedate item={this.state.item} duedate={this.state.duedate} updateDate={this.updateItemValue}/> 
-         
-      </div>
+      <React.Fragment>
+        {(this.state.task === '' && this.state.isInEditMode === false) ? '':
+        <div class="item">
+          {this.state.isInEditMode  ?
+          this.renderEditView() :
+          this.renderTextView()}
+          <Duedate item={this.state.item} duedate={this.state.duedate} updateDate={this.updateItemValue}/> 
+        </div>}
+      </React.Fragment>
     )
   }
 
@@ -1091,6 +1092,11 @@ class Duedate extends React.Component {
   render() {
     moment.defaultFormat = "DD.MM.YYYY";
     var dateSelected = moment(moment(this.state.date).toDate(), moment.defaultFormat).toDate();
+    // Let's use the static moment reference in the Datetime component
+    var yesterday = Datetime.moment().subtract( 1, 'day' );
+    var valid = function( current ){
+        return current.isAfter( yesterday );
+    };
     return (
          <div className="duedate calendar-container" ref={this.setWrapperRef}>
           { this.state.date ?
@@ -1105,7 +1111,14 @@ class Duedate extends React.Component {
 
           { this.state.isOpen && 
             <React.Fragment>
-              <Datetime input={false} onChange={this.saveDateChange} value={dateSelected}></Datetime>
+              <Datetime 
+                input={false} 
+                onChange={this.saveDateChange} 
+                value={dateSelected}
+                timeFormat={false}
+                isValidDate={ valid }
+              >
+              </Datetime>
              {/*<Datetime input={false} onChange={this.handleDateChange} value={dateSelected}></Datetime>
              <button className="setTime" onClick={this.setDate}>SetTime</button>*/}
             </React.Fragment>

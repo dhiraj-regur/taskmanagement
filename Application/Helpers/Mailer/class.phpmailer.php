@@ -379,6 +379,7 @@ class PHPMailer {
    * @return bool
    */
   public function Send() {
+    die('coming in hree2');
     $header = '';
     $body = '';
     $result = true;
