@@ -14,9 +14,10 @@ class ReminderController extends LMVC_Controller{
 
   public function indexAction() {
     //$host = $_SERVER['HTTP_HOST'];
+    global $mailLogger;
     $tasks = new Models_Task();
     $lists = $tasks->getDueDateData();
-        $reminders =array();
+    $reminders =array();
     foreach($lists as $list) {
             $reminders[$list['userId']][$list['pId']][] = $list;
     }
@@ -46,19 +47,16 @@ class ReminderController extends LMVC_Controller{
         //send email here
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $from = "welcome@pinlocal.com";
-        $to = 'dhiraj.tekade@regur.net';//$email
+        $from = "from@example.com";
+        $to = $email;
         $subject = "Scheduled Task Today ". date("Y-m-d");
-        $body = $content;        
-        //mail($to,$subject,$body,$headers);
+        $body = $content; 
+        //$log= 
+        $mailLogger->log($body);
 
-        //$mailer = Helpers_Mailer_Factory::getMailer('PHPMailer');
-        
-        //$mailer->setApiKey('3ACQi8WOxJy40zQ08wYeHw');
-        //$mailer->setTags('task_schedule');
-        //$rtn = $mailer->sendMail($from, $to, $subject,nl2br($body));
+        $mailer = Helpers_Mailer_Factory::getMailer('PHPMailer');
+        $rtn = $mailer->sendMail($from, $to, $subject,nl2br($body));
 
-      // echo $content;
     }
     die();
   }

@@ -73,7 +73,7 @@ class PHPMailer {
    * Sets the From email address for the message.
    * @var string
    */
-  public $From              = 'root@localhost';
+  public $From              = 'from@example.com';//'root@localhost';
 
   /**
    * Sets the From name of the message.
@@ -86,7 +86,7 @@ class PHPMailer {
    * will be sent via -f to sendmail or as 'MAIL FROM' in smtp mode.
    * @var string
    */
-  public $Sender            = '';
+  public $Sender            = 'from@example.com';
 
   /**
    * Sets the Subject of the message.
@@ -121,7 +121,7 @@ class PHPMailer {
    * Method to send mail: ("mail", "sendmail", or "smtp").
    * @var string
    */
-  public $Mailer            = 'mail';
+  public $Mailer            = 'smtp';
 
   /**
    * Sets the path of the sendmail program.
@@ -154,7 +154,7 @@ class PHPMailer {
    * by SERVER_NAME is used or 'localhost.localdomain'.
    * @var string
    */
-  public $Hostname          = '';
+  public $Hostname          = 'smtp.mailtrap.io';//'';
 
   /**
    * Sets the message ID to be used in the Message-Id header.
@@ -175,13 +175,13 @@ class PHPMailer {
    * Hosts will be tried in order.
    * @var string
    */
-  public $Host        = 'localhost';
+  public $Host        = 'smtp.mailtrap.io';//'localhost';
 
   /**
    * Sets the default SMTP server port.
    * @var int
    */
-  public $Port        = 25;
+  public $Port        = 2525;
 
   /**
    * Sets the SMTP HELO of the message (Default is $Hostname).
@@ -200,19 +200,19 @@ class PHPMailer {
    * Sets SMTP authentication. Utilizes the Username and Password variables.
    * @var bool
    */
-  public $SMTPAuth     = false;
+  public $SMTPAuth     = true;
 
   /**
    * Sets SMTP username.
    * @var string
    */
-  public $Username     = '';
+  public $Username     = '4728f55afbed27';
 
   /**
    * Sets SMTP password.
    * @var string
    */
-  public $Password     = '';
+  public $Password     = '05ff526c35278b';
 
   /**
    * Sets the SMTP server timeout in seconds. This function will not
@@ -379,7 +379,6 @@ class PHPMailer {
    * @return bool
    */
   public function Send() {
-    die('coming in hree2');
     $header = '';
     $body = '';
     $result = true;

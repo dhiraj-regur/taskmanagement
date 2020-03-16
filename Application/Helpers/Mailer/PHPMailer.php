@@ -22,6 +22,17 @@ class Helpers_Mailer_PHPMailer extends Helpers_Mailer_Abstract
 
     public function send()
     {
+        $phpMailer = new PHPMailer();
+        $email = $this->getRecipients()[0]['email'];
+        $name = $this->getRecipients()[0]['name'];
+        $body = $this->getHtmlBody();
+        $from = $this->getSender()['email'];
+        $phpMailer->Subject = "A Transactional Email From Pepipost";
+        $phpMailer->MsgHTML($body);
+        $phpMailer->AddAddress($email,$name);
+        $phpMailer->send();
 
     }
+
+
 }

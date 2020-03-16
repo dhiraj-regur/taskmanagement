@@ -15,6 +15,9 @@ LMVC_Session::init();
 $dbLogger = new LMVC_Logger();
 $dbLogger->setLogFilePath(APPLICATION_PATH .'/extras/logs/dblog.txt',true);
 
+$mailLogger = new LMVC_Logger();
+$mailLogger->setLogFilePath(APPLICATION_PATH .'/extras/logs/reminderlog.txt',true);
+
 $leadAPILogger = new LMVC_Logger();
 
 $postcodeBreakdownLogger = new LMVC_Logger();
