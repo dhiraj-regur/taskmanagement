@@ -8,6 +8,7 @@ CREATE TABLE `tasks` (
   `projectId` int(10) NOT NULL,
   `urgent` int(10) NOT NULL DEFAULT '1',
   `important` int(10) NOT NULL DEFAULT '1',
+  `duedate` date DEFAULT NULL
   PRIMARY KEY (`id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
