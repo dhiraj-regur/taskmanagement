@@ -54,12 +54,13 @@ class ReminderController extends LMVC_Controller{
         $subject = "Scheduled Task Today ". date("Y-m-d");
         $body = $content;
 
-        $log = "=======================================================================\n ";
-        $log .= "From: $from\n ";
-        $log .= "To: $to\n ";
-        $log .= "Subject: $subject\n ";
+        $log = "=======================================================================\r\n ";
+        $log .= "From: $from\r\n ";
+        $log .= "To: $to\r\n ";
+        $log .= "Subject: $subject\r\n ";
+        
         $content = htmlspecialchars(trim(strip_tags($content)));
-        $log .= "Body:\n $content"."\n\n ";
+        $log .= "Body:\n $content"."\r\n\r\n";
         $mailLogger->log($log, true);
 
         $mailer = Helpers_Mailer_Factory::getMailer('PHPMailer');
