@@ -2,8 +2,11 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
-  background: #e0e8e87a;;
+  background: #e0e8e87a;
 
+}
+html {
+  background: #E8EEEE !important;
 }
 
 /*Board related*/

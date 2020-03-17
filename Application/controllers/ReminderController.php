@@ -13,7 +13,8 @@ class ReminderController extends LMVC_Controller{
 	}
 
   public function indexAction() {
-    //$host = $_SERVER['HTTP_HOST'];
+    $host = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST'];
+    $appurl = $host.'/app';
     global $mailLogger;
     $tasks = new Models_Task();
     $lists = $tasks->getDueDateData();
@@ -31,9 +32,10 @@ class ReminderController extends LMVC_Controller{
         $content = 'Hi '.ucwords($userName).',';
         $content .= '<br> You have following task scheduled today.<br>';
         $content .= '<ol>';
-        foreach ($userReminder as $project) { 
+        foreach ($userReminder as $project) {
+            $projectLink = $appurl."?pId=".$project[0]['pId'];
             $content .= '<li>';
-            $content .= '<strong>'.$project[0]['projectname'].'</strong>';//TODO- add project link
+            $content .= '<a href="'.$projectLink.'">'.$project[0]['projectname'].'</a>';
             $content .= '<ul>';
             foreach ($project as $tasks) {
                 $content .= '<li>';
@@ -50,9 +52,15 @@ class ReminderController extends LMVC_Controller{
         $from = "from@example.com";
         $to = $email;
         $subject = "Scheduled Task Today ". date("Y-m-d");
-        $body = $content; 
-        //$log= 
-        $mailLogger->log($body);
+        $body = $content;
+
+        $log = "=======================================================================\n ";
+        $log .= "From: $from\n ";
+        $log .= "To: $to\n ";
+        $log .= "Subject: $subject\n ";
+        $content = htmlspecialchars(trim(strip_tags($content)));
+        $log .= "Body:\n $content"."\n\n ";
+        $mailLogger->log($log, true);
 
         $mailer = Helpers_Mailer_Factory::getMailer('PHPMailer');
         $rtn = $mailer->sendMail($from, $to, $subject,nl2br($body));
