@@ -13,7 +13,7 @@ class ReminderController extends LMVC_Controller{
 	}
 
   public function indexAction() {
-    $host = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST'];
+    $host = "https://".$_SERVER['HTTP_HOST'];
     $appurl = $host.'/app';
     global $mailLogger;
     $tasks = new Models_Task();

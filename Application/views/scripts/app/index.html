@@ -712,6 +712,11 @@ class Quadrant extends React.Component {
 
   onKeyPressed(e) {
     if ((e.keyCode === KEYCODE_ENTER) && this.state.lastUpdatedQuadrant ==  this.state.type) {
+      //handle Quadrant and Item Enter. As Item only shall take action on task
+      var itemElement = document.getElementById(this.state.type);
+      if (itemElement != null) {
+        this.setState({ addUpdateToggle: true })
+      }
       this.setState({ lastUpdatedQuadrant: '' })
       this.setState({ addUpdateToggle: !this.state.addUpdateToggle })
       if(this.state.addUpdateToggle === true) {
