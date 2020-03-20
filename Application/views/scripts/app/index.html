@@ -53,6 +53,7 @@ class ProjectTaskFetch extends React.Component {
       projectsInfo: [],
       fetchdata: false,
       projectId: props.projectId,
+      theme: 'default',
     }
   }
 
@@ -85,17 +86,28 @@ class ProjectTaskFetch extends React.Component {
               });
   }
 
+  
+  changeThemeContext = (event) => {
+   this.setState({theme: event.target.value});
+  }
+
   render() {
+    const contextValue = {
+      theme: this.state.theme,
+      changeTheme: this.changeThemeContext
+    }
     return (
-      <div className="app">
-        {this.state.fetchdata === true && 
-        <App
-          allTabItems={this.state.allTabItems}
-          projectsInfo={this.state.projectsInfo}
-          projectId={this.state.projectId}
-        />
-        }
-      </div>
+      <MyContext.Provider value={contextValue}>
+        <div className="app">
+            {this.state.fetchdata === true &&
+          <App
+            allTabItems={this.state.allTabItems}
+            projectsInfo={this.state.projectsInfo}
+            projectId={this.state.projectId}
+          />
+          }
+        </div>
+      </MyContext.Provider>
     )
   }
 
@@ -236,6 +248,18 @@ class App extends React.Component {
           </p>
         </div>
         }
+        <MyContext.Consumer>
+          {data => 
+            <select className="themeselect" value={data.theme} onChange={data.changeTheme}>
+              <option value="Default">Default</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+            </select>
+          }
+        </MyContext.Consumer>
+
       </React.Fragment>
     )
   }
@@ -323,6 +347,11 @@ class Project extends React.Component {
       }
     })
 
+    var context = this.context;
+    const quadrantStyle = {
+      //use background-color from themes const
+      backgroundColor: themes[context.theme],
+    };
     return (
       <React.Fragment>
         {showProject === true && 
@@ -346,7 +375,8 @@ class Project extends React.Component {
             <div className="div2"> <p>Important</p></div>
             <div className="div3"> <p>Not Important</p></div>
             <div className="div4"> <p className="verticaltext">Urgent</p></div>
-            <div className="div5"> <Quadrant 
+            <div className="div5" style={quadrantStyle}
+            > <Quadrant 
                                       type="ui" quadrantTasks={ui} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
@@ -354,7 +384,7 @@ class Project extends React.Component {
                                       lastUpdatedQuadrant={this.state.lastUpdatedQuadrant}
                                     />
             </div>
-            <div className="div6"> <Quadrant 
+            <div className="div6" style={quadrantStyle}> <Quadrant 
                                       type="un" quadrantTasks={un} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
@@ -363,7 +393,7 @@ class Project extends React.Component {
                                     />
             </div>
             <div className="div7"> <p className="verticaltext">Not Urgent</p></div>
-            <div className="div8"> <Quadrant 
+            <div className="div8" style={quadrantStyle}> <Quadrant 
                                       type="ni" quadrantTasks={ni} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
@@ -371,7 +401,7 @@ class Project extends React.Component {
                                       lastUpdatedQuadrant={this.state.lastUpdatedQuadrant}
                                     />
             </div>
-            <div className="div9"> <Quadrant 
+            <div className="div9" style={quadrantStyle}> <Quadrant 
                                       type="nn" quadrantTasks={nn} projectInfo={this.state.tabitem}
                                       projectId={this.state.projectId} 
                                       projectTaskCount={this.updateTaskCount}
@@ -382,7 +412,7 @@ class Project extends React.Component {
           </div>
         </div>
         }
- 
+        
     </React.Fragment>
     )
   }
@@ -1157,6 +1187,16 @@ function getParams(location) {
   };
 }
 
+const MyContext = React.createContext();
+Project.contextType = MyContext;
+
+const themes = {
+  default: '#D9EAD3',
+  light: '#eeeeee',
+  dark: '#222222',
+  blue: '#2664D4',
+  green: '#2DCC19',
+};
 
 ReactDOM.render(
   <Taskmanagement />,

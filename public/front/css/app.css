@@ -213,12 +213,7 @@ div[class^="insertItem"]:hover {
 /******************/
 
 .projectBoard {
-  /*clear: both;
-  top: 120px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;*/
+  overflow: auto;
 }
 
 .projectTab label:hover {
@@ -310,6 +305,12 @@ div[class^="insertItem"]:hover {
   display: table;
 }
 
+.themeselect {
+  position: fixed;
+  top: 70px;
+  right: 30px;
+}
+
 .item {
   clear:both;
   position: relative;
@@ -318,6 +319,8 @@ div[class^="insertItem"]:hover {
   float:left;
   width: 80%;
 }
+
+/*calendar css*/
 .duedate {
   float:right;
 }
@@ -360,7 +363,6 @@ div[class^="insertItem"]:hover {
   color: green;
 }
 
-/*calendar css*/
 .calendar-container {
   /*width: 260px;*/
   text-align: end;
