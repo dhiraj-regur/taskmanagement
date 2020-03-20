@@ -249,7 +249,7 @@ class App extends React.Component {
         </div>
         }
         <MyContext.Consumer>
-          {data => 
+           {data =>
             <select className="themeselect" value={data.theme} onChange={data.changeTheme}>
               <option value="Default">Default</option>
               <option value="light">Light</option>
